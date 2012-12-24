@@ -144,26 +144,35 @@ class FeatureConnection(ServerConnection):
     def on_connect(self):
         protocol = self.protocol
         client_ip = self.address[0]
-        try:
-            name, reason, timestamp = self.protocol.bans[client_ip]
-            if timestamp is not None and reactor.seconds() >= timestamp:
-                protocol.remove_ban(client_ip)
-                protocol.save_bans()
-            else:
-                print 'banned user %s (%s) attempted to join' % (name, 
-                    client_ip)
-                self.disconnect(ERROR_BANNED)
-                return
-        except KeyError:
-            pass
-        manager = self.protocol.ban_manager
-        if manager is not None:
-            reason = manager.get_ban(client_ip)
-            if reason is not None:
-                print ('federated banned user (%s) attempted to join, '
-                    'banned for %r') % (client_ip, reason)
-                self.disconnect(ERROR_BANNED)
-                return
+        whitelisted = False
+        
+        if self.protocol.whitelist is not None:
+            ips = self.protocol.whitelist.get('users', [])
+            for user in users:
+                if client_ip == user.get('ip', '127.0.0.1'):
+                    whitelisted = True
+        
+        if not whitelisted:
+            try:
+                name, reason, timestamp = self.protocol.bans[client_ip]
+                if timestamp is not None and reactor.seconds() >= timestamp:
+                    protocol.remove_ban(client_ip)
+                    protocol.save_bans()
+                else:
+                    print 'banned user %s (%s) attempted to join' % (name, 
+                        client_ip)
+                    self.disconnect(ERROR_BANNED)
+                    return
+            except KeyError:
+                pass
+            manager = self.protocol.ban_manager
+            if manager is not None:
+                reason = manager.get_ban(client_ip)
+                if reason is not None:
+                    print ('federated banned user (%s) attempted to join, '
+                        'banned for %r') % (client_ip, reason)
+                    self.disconnect(ERROR_BANNED)
+                    return
         ServerConnection.on_connect(self)
     
     def on_join(self):
@@ -549,6 +558,10 @@ class FeatureProtocol(ServerProtocol):
         self.advance_on_win = int(config.get('advance_on_win', False))
         self.win_count = itertools.count(1)
         self.bans = NetworkDict()
+        try:
+            self.whitelist = json.load(open('whitelist.txt', 'rb'))
+        except IOError:
+            pass
         try:
             self.bans.read_list(json.load(open('bans.txt', 'rb')))
         except IOError:
