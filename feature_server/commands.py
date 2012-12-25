@@ -16,6 +16,7 @@
 # along with pyspades.  If not, see <http://www.gnu.org/licenses/>.
 
 import math
+import json
 from random import choice
 from pyspades.constants import *
 from pyspades.common import prettify_timespan
@@ -183,6 +184,21 @@ def undo_ban(connection, *arg):
         return ('Ban for %s undone' % result[0])
     else:
         return 'No bans to undo!'
+
+@name('wlcheck')
+@admin
+def whitelist_check(connection, ip):
+    users = connection.protocol.whitelist.get('users', [])
+    for user in users:
+        if user.get('ip', -1) == ip:
+            return 'IP %s found on whitelist with nick "%s"' % (user.get('ip', ''), user.get('nick', 'unknown'))
+    return 'IP not found on whitelist.'
+
+@name('wlreload')
+@admin
+def whitelist_reload(connection):
+    connection.protocol.whitelist = json.load(open('whitelist.txt', 'rb'))
+    return 'Whitelist reloaded'
 
 @admin
 def say(connection, *arg):
