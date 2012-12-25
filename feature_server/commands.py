@@ -179,13 +179,15 @@ def unban(connection, ip):
 @name('undoban')
 @admin
 def undo_ban(connection, *arg):
+    if len(arg) > 0:
+        return 'Did you mean to use "unban"? undoban never takes an argument.'
     if len(connection.protocol.bans)>0:
         result = connection.protocol.undo_last_ban()
         return ('Ban for %s undone' % result[0])
     else:
         return 'No bans to undo!'
 
-@name('wlcheck')
+@alias('wlcheck')
 @admin
 def whitelist_check(connection, ip):
     users = connection.protocol.whitelist.get('users', [])
@@ -194,7 +196,7 @@ def whitelist_check(connection, ip):
             return 'IP %s found on whitelist with nick "%s"' % (user.get('ip', ''), user.get('nick', 'unknown'))
     return 'IP not found on whitelist.'
 
-@name('wlreload')
+@alias('wlreload')
 @admin
 def whitelist_reload(connection):
     connection.protocol.whitelist = json.load(open('whitelist.txt', 'rb'))
