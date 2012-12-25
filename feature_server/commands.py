@@ -875,6 +875,8 @@ command_list = [
     banip,
     unban,
     undo_ban,
+    whitelist_check,
+    whitelist_reload,
     mute,
     unmute,
     deaf,
