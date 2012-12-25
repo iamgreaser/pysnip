@@ -147,7 +147,7 @@ class FeatureConnection(ServerConnection):
         whitelisted = False
         
         if self.protocol.whitelist is not None:
-            ips = self.protocol.whitelist.get('users', [])
+            users = self.protocol.whitelist.get('users', [])
             for user in users:
                 if client_ip == user.get('ip', '127.0.0.1'):
                     whitelisted = True
