@@ -298,11 +298,15 @@ def to_admin(connection, *arg):
                 (connection.name, message))
     return 'Message sent to admins'
 
-def streak(connection):
+def streak(connection, name = None):
     if connection not in connection.protocol.players:
-        raise KeyError()
-    return ('Your current kill streak is %s. Best is %s kills' %
-        (connection.streak, connection.best_streak))
+         raise KeyError()
+    if name is None:
+       player = connection
+    else:
+       player = get_player(connection.protocol, name)
+    return ('%s current kill streak is %s. Best is %s kills' %
+       (player.name, player.streak, player.best_streak))
 
 @admin
 def lock(connection, value):
@@ -364,6 +368,7 @@ def set_balance(connection, value):
     connection.protocol.irc_say('* %s set balanced teams to %s' % (
         connection.name, value))
 
+@alias('tb')
 @name('togglebuild')
 @admin
 def toggle_build(connection, player = None):
@@ -383,6 +388,7 @@ def toggle_build(connection, player = None):
     connection.protocol.irc_say('* %s toggled building %s' % (connection.name, 
         on_off))
     
+@alias('tk')
 @name('togglekill')
 @admin
 def toggle_kill(connection, player = None):
@@ -418,17 +424,19 @@ def mute(connection, value):
     if player.mute:
         return '%s is already muted' % player.name
     player.mute = True
-    message = '%s has been muted by %s' % (player.name, connection.name)
-    connection.protocol.send_chat(message, irc = True)
-
+    message = '%s has been muted' % (player.name)
+    connection.protocol.send_chat(message, irc = False)
+    connection.protocol.irc_say('%s has been muted by %s' % (player.name, connection.name))
+ 
 @admin
 def unmute(connection, value):
     player = get_player(connection.protocol, value)
     if not player.mute:
         return '%s is not muted' % player.name
     player.mute = False
-    message = '%s has been unmuted by %s' % (player.name, connection.name)
-    connection.protocol.send_chat(message, irc = True)
+    message = '%s has been unmuted' % (player.name)
+    connection.protocol.send_chat(message, irc = False)
+    connection.protocol.irc_say('%s has been unmuted by %s' % (player.name, connection.name))
 
 def deaf(connection, value = None):
     if value is not None:
@@ -484,8 +492,8 @@ def unstick(connection, player = None):
         player = get_player(connection.protocol, player)
     else:
         player = connection
-    connection.protocol.send_chat("%s unstuck %s" %
-        (connection.name, player.name), irc = True)
+    connection.protocol.send_chat('%s was unstuck' % (player.name))
+    connection.protocol.irc_say('%s unstuck %s' % (connection.name, player.name))
     player.set_location_safe(player.get_location())
       
 @alias('tps')
