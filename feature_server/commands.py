@@ -994,7 +994,7 @@ def handle_command(connection, command, parameters):
     try:
         command_func = commands[command]
     except KeyError:
-        return # 'Invalid command'
+        return 'Invalid command'
     mn = len(command_func.argspec.args) - 1 - len(command_func.argspec.defaults or ())
     mx = len(command_func.argspec.args) - 1 if command_func.argspec.varargs is None else None
     lp = len(parameters)
