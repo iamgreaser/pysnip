@@ -142,14 +142,19 @@ class IRCBot(irc.IRCClient):
         if user in self.moderators or user in self.voices:
             if user in self.owners:
                 prefix = '~'
+                user_type = 'admin'
             elif user in self.admins:
                 prefix = '&'
+                user_type = 'admin'
             elif user in self.moderators:
                 prefix = '@'
+                user_type = 'moderator'
             elif user in self.guards:
                 prefix = '%'
+                user_type = 'guard'
             else:
                 prefix = '+'
+                user_type = 'none'
             alias = self.factory.aliases.get(user, user)
             if msg.startswith(self.factory.commandprefix) and (
                 user in self.owners or user in self.admins or
@@ -157,7 +162,11 @@ class IRCBot(irc.IRCClient):
                 self.unaliased_name = user
                 self.name = prefix + alias
                 input = msg[len(self.factory.commandprefix):]
+                rights = self.rights
+                self.rights = AttributeSet()
+                self.rights.update(commands.rights.get(user_type, ()))
                 result = commands.handle_input(self, input)
+                self.rights = rights
                 if result is not None:
                     self.send("%s: %s" % (user, result))
             elif msg.startswith(self.factory.chatprefix):
