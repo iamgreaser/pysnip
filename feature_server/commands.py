@@ -408,7 +408,7 @@ def toggle_kill(connection, player = None):
     connection.protocol.irc_say('* %s toggled killing %s' % (connection.name, 
         on_off))
 
-@name('toggleteamkill')
+@name('ttk')
 @admin
 def toggle_teamkill(connection):
     value = not connection.protocol.friendly_fire
@@ -453,7 +453,7 @@ def deaf(connection, value = None):
         connection.send_chat(message)
         connection.deaf = True
 
-@name('globalchat')
+@name('togglechat')
 @admin
 def global_chat(connection):
     connection.protocol.global_chat = not connection.protocol.global_chat
@@ -1005,7 +1005,7 @@ def handle_command(connection, command, parameters):
             return "You can't use this command"
         return command_func(connection, *parameters)
     except KeyError:
-        return # 'Invalid command'
+        return 'Invalid command'
     except TypeError, t:
         print 'Command', command, 'failed with args:', parameters
         print t
