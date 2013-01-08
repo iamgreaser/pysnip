@@ -167,6 +167,7 @@ class IRCBot(irc.IRCClient):
                 self.rights.update(commands.rights.get(user_type, ()))
                 self.rights.update(commands.rights.get('irc', ()))
                 result = commands.handle_input(self, input)
+                print('commands.handle_input returned "%s"' % result)
                 self.rights = rights
                 if result is not None:
                     self.send("%s: %s" % (user, result))
