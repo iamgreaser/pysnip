@@ -139,8 +139,8 @@ class IRCBot(irc.IRCClient):
     
     @channel
     def privmsg(self, user, channel, msg):
-        if user in self.owners or user in self.admins or
-            user in self.moderators or user in self.guards or user in self.voices:
+        if (user in self.owners or user in self.admins or
+            user in self.moderators or user in self.guards or user in self.voices):
             if user in self.owners:
                 prefix = '~'
                 user_type = 'admin'
