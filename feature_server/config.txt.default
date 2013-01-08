@@ -1,9 +1,9 @@
 {
-    "name" : "PySnip server",
+    "name" : "Minit Server",
     "motd" : [
         "Welcome to %(server_name)s! See /help for commands",
         "Map is %(map_name)s by %(map_author)s",
-        "(server powered by PySnip and BuildandShoot.com)"
+        "(server powered by pycubed and minit)"
     ],
     "help" : [
         "/SQUAD     Creates or joins a squad, letting you spawn with friends",
@@ -77,10 +77,14 @@
     },
     "passwords" : {
         "admin" : ["replaceme"],
+        "moderator" : [],
+        "guard" : [],
         "trusted" : [],
         "builder" : []
     },
     "rights" : {
+        "moderator" : [],
+        "guard" : [],
         "builder" : ["god", "goto"]
     },
     "ssh" : {
@@ -106,15 +110,15 @@
     },
     "irc" : {
         "enabled" : false,
-        "nickname" : "pysnip",
-        "username" : "pysnip",
-        "realname" : "pysnip server bot",
-        "server" : "irc.quakenet.org",
+        "nickname" : "pycubed",
+        "username" : "pycubed",
+        "realname" : "pycubed server bot",
+        "server" : "irc.minit.nu",
         "port" : 6667,
-        "channel" : "#pysnip.bots",
+        "channel" : "#minit.bots",
         "password" : "",
-        "commandprefix" : ".",
-        "chatprefix" : ""
+        "commandprefix" : "!",
+        "chatprefix" : "."
     },
     "scripts" : [
         "welcome",
