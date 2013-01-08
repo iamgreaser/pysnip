@@ -49,7 +49,10 @@ def channel(func):
     return new_func
 
 class IRCBot(irc.IRCClient):
-    ops = None
+    owners = None
+    admins = None
+    moderators = None
+    guards = None
     voices = None
     unaliased_name = None
     
@@ -78,16 +81,28 @@ class IRCBot(irc.IRCClient):
     
     def joined(self, channel):
         if channel.lower() == self.factory.channel:
-            self.ops = set()
+            self.owners = set()
+            self.admins = set()
+            self.moderators = set()
+            self.guards = set()
             self.voices = set()
         print "Joined channel %s" % channel
     
     def irc_NICK(self, prefix, params):
         user = prefix.split('!', 1)[0]
         new_user = params[0]
-        if user in self.ops:
-            self.ops.discard(user)
-            self.ops.add(new_user)
+        if user in self.owners:
+            self.owners.discard(user)
+            self.owners.add(new_user)
+        if user in self.admins:
+            self.admins.discard(user)
+            self.admins.add(new_user)
+        if user in self.moderators:
+            self.moderators.discard(user)
+            self.moderators.add(new_user)
+        if user in self.guards:
+            self.guards.discard(user)
+            self.guards.add(new_user)
         if user in self.voices:
             self.voices.discard(user)
             self.voices.add(new_user)
@@ -97,18 +112,21 @@ class IRCBot(irc.IRCClient):
             return
         for name in arg[1][3].split():
             mode = name[0]
-            l = {'@': self.ops, '+': self.voices}
+            l = {'~': self.owners, '&': self.admins, '@': self.moderators, '%': self.guards, '+': self.voices}
             if mode in l: 
                 l[mode].add(name[1:])
     
     def left(self, channel):
         if channel.lower() == self.factory.channel:
-            self.ops = None
+            self.owners = None
+            self.admins = None
+            self.moderators = None
+            self.guards = None
             self.voices = None
     
     @channel
     def modeChanged(self, user, channel, set, modes, args):
-        ll = {'o' : self.ops, 'v' : self.voices}
+        ll = {'q' : self.owners, 'a' : self.admins, 'o' : self.moderators, 'h' : self.guards, 'v' : self.voices}
         for i in range(len(args)):
             mode, name = modes[i], args[i]
             if mode not in ll:
@@ -121,10 +139,21 @@ class IRCBot(irc.IRCClient):
     
     @channel
     def privmsg(self, user, channel, msg):
-        if user in self.ops or user in self.voices:
-            prefix = '@' if user in self.ops else '+'
+        if user in self.moderators or user in self.voices:
+            if user in self.owners:
+                prefix = '~'
+            elif user in self.admins:
+                prefix = '&'
+            elif user in self.moderators:
+                prefix = '@'
+            elif user in self.guards:
+                prefix = '%'
+            else:
+                prefix = '+'
             alias = self.factory.aliases.get(user, user)
-            if msg.startswith(self.factory.commandprefix) and user in self.ops:
+            if msg.startswith(self.factory.commandprefix) and (
+                user in self.owners or user in self.admins or
+                user in self.moderators or user in self.guards):
                 self.unaliased_name = user
                 self.name = prefix + alias
                 input = msg[len(self.factory.commandprefix):]
@@ -141,7 +170,10 @@ class IRCBot(irc.IRCClient):
     
     @channel
     def userLeft(self, user, channel):
-        self.ops.discard(user)
+        self.owners.discard(user)
+        self.admins.discard(user)
+        self.moderators.discard(user)
+        self.guards.discard(user)
         self.voices.discard(user)
 
     def userQuit(self, user, message):
@@ -176,7 +208,7 @@ class IRCClientFactory(protocol.ClientFactory):
     def __init__(self, server, config):
         self.aliases = {}
         self.admin = True
-        self.user_types = AttributeSet(['admin', 'irc'])
+        self.user_types = AttributeSet(['admin', 'moderator', 'guard', 'irc'])
         self.rights = AttributeSet()
         for user_type in self.user_types:
             self.rights.update(commands.rights.get(user_type, ()))
