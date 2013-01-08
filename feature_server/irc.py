@@ -139,7 +139,8 @@ class IRCBot(irc.IRCClient):
     
     @channel
     def privmsg(self, user, channel, msg):
-        if user in self.moderators or user in self.voices:
+        if user in self.owners or user in self.admins or
+            user in self.moderators or user in self.guards or user in self.voices:
             if user in self.owners:
                 prefix = '~'
                 user_type = 'admin'
@@ -167,7 +168,6 @@ class IRCBot(irc.IRCClient):
                 self.rights.update(commands.rights.get(user_type, ()))
                 self.rights.update(commands.rights.get('irc', ()))
                 result = commands.handle_input(self, input)
-                print('commands.handle_input returned "%s"' % result)
                 self.rights = rights
                 if result is not None:
                     self.send("%s: %s" % (user, result))
