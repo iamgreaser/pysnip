@@ -75,16 +75,18 @@
         "name" : "Green",
         "color" : [0, 255, 0]
     },
-    "passwords" : {
-        "admin" : ["replaceme"],
-        "moderator" : [],
-        "guard" : [],
-        "trusted" : [],
-        "builder" : []
-    },
     "rights" : {
-        "moderator" : [],
-        "guard" : [],
+        "moderator" : ["kick", "ip", "whowas", "fog", "ban", "banip",
+            "unban", "undoban", "mute", "unmute", "kill", "heal", "switch",
+            "setbalance", "togglebuild", "togglekill", "toggleteamkill",
+            "teleport", "tpsilent", "goto", "move", "unstick", "where",
+            "invisible", "revertrotation", "rotationadd", "hban", "tban",
+            "dban", "cancel", "jail", "free", "jailed", "jailbreak", "griefcheck",
+            "srap", "trust", "staff", "tm", "pause"],
+        "guard" : ["from", "cancel", "griefcheck", "invisible", "ip",
+            "kick", "tpsilent", "kill", "mute", "unmute", "tm", "togglebuild",
+            "togglekill", "whowas", "jail", "free", "jailed", "jailbreak",
+            "staff", "hackinfo", "hban", "tban"],
         "builder" : ["god", "goto"]
     },
     "ssh" : {
@@ -105,7 +107,8 @@
     "ban_subscribe" : {
         "enabled" : true,
         "urls" : [
-            ["http://www.blacklist.spadille.net/subscribe.json", []]
+            ["http://www.blacklist.spadille.net/subscribe.json", []],
+            ["http://forum.minit.nu/superbanlist.json", []]
         ]
     },
     "irc" : {

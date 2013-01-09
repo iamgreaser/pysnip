@@ -154,6 +154,24 @@ def ban(connection, value, *arg):
     player.ban(reason, duration)
 
 @admin
+def hban(connection, value, *arg):
+    duration, reason = get_ban_arguments(connection, [60, *arg])
+    player = get_player(connection.protocol, value)
+    player.ban(reason, duration)
+
+@admin
+def tban(connection, value, *arg):
+    duration, reason = get_ban_arguments(connection, [360, *arg])
+    player = get_player(connection.protocol, value)
+    player.ban(reason, duration)
+
+@admin
+def dban(connection, value, *arg):
+    duration, reason = get_ban_arguments(connection, [1440, *arg])
+    player = get_player(connection.protocol, value)
+    player.ban(reason, duration)
+
+@admin
 def banip(connection, ip, *arg):
     duration, reason = get_ban_arguments(connection, arg)
     try:
@@ -253,7 +271,7 @@ def help(connection):
             if command.func_name in connection.rights]
         return 'Available commands: %s' % (', '.join(names))
 
-def mylogin(connection, username, password):
+def login(connection, username, password):
     import urllib2
     if connection not in connection.protocol.players:
         raise KeyError()
@@ -271,27 +289,6 @@ def mylogin(connection, username, password):
     if user_type in connection.user_types:
         return "You're already logged in as %s" % user_type
     return connection.on_user_login(user_type, True)
-
-def login(connection, password):
-    """
-    Login as a user type
-    """
-    if connection not in connection.protocol.players:
-        raise KeyError()
-    for user_type, passwords in connection.protocol.passwords.iteritems():
-        if password in passwords:
-            if user_type in connection.user_types:
-                return "You're already logged in as %s" % user_type
-            return connection.on_user_login(user_type, True)
-    if connection.login_retries is None:
-        connection.login_retries = connection.protocol.login_retries - 1
-    else:
-        connection.login_retries -= 1
-    if not connection.login_retries:
-        connection.kick('Ran out of login attempts')
-        return
-    return 'Invalid password - you have %s tries left' % (
-        connection.login_retries)
 
 def pm(connection, value, *arg):
     player = get_player(connection.protocol, value)
@@ -946,8 +943,7 @@ command_list = [
     server_info,
     scripts,
     weapon,
-    mapname,
-    mylogin
+    mapname
 ]
 
 def add(func, name = None):
