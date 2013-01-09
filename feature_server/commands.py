@@ -257,20 +257,20 @@ def mylogin(connection, username, password):
     import urllib2
     if connection not in connection.protocol.players:
         raise KeyError()
-    user_type = urllib2.urlopen('http://dev.minit.nu/login_check.php?username=' + username + '&password=' + password)
+    user_type = urllib2.urlopen('http://dev.minit.nu/login_check.php?username=' + username + '&password=' + password).read()
+    if user_type == 'none':
+        if connection.login_retries is None:
+            connection.login_retries = connection.protocol.login_retries - 1
+        else:
+            connection.login_retries -= 1
+        if not connection.login_retries:
+            connection.kick('Ran out of login attempts')
+            return
+        return 'Invalid password - you have %s tries left' % (
+            connection.login_retries)
     if user_type in connection.user_types:
         return "You're already logged in as %s" % user_type
     return connection.on_user_login(user_type, True)
-    if connection.login_retries is None:
-        connection.login_retries = connection.protocol.login_retries - 1
-    else:
-        connection.login_retries -= 1
-    if not connection.login_retries:
-        connection.kick('Ran out of login attempts')
-        return
-    return 'Invalid password - you have %s tries left' % (
-        connection.login_retries)
-
 
 def login(connection, password):
     """
@@ -946,7 +946,8 @@ command_list = [
     server_info,
     scripts,
     weapon,
-    mapname
+    mapname,
+    mylogin
 ]
 
 def add(func, name = None):
