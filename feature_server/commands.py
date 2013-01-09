@@ -275,7 +275,7 @@ def login(connection, username, password):
     import urllib2
     if connection not in connection.protocol.players:
         raise KeyError()
-    user_type = urllib2.urlopen('http://dev.minit.nu/login_check.php?username=' + username + '&password=' + password).read()
+    user_type = urllib2.urlopen('http://forum.minit.nu/login_check.php?username=' + username + '&password=' + password).read()
     if user_type == 'none':
         if connection.login_retries is None:
             connection.login_retries = connection.protocol.login_retries - 1
