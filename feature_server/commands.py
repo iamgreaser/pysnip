@@ -403,6 +403,10 @@ def toggle_build(connection, player = None):
     connection.protocol.send_chat('Building has been toggled %s!' % on_off)
     connection.protocol.irc_say('* %s toggled building %s' % (connection.name, 
         on_off))
+
+@admin
+def tbp(connection, player):
+    toggle_build(connection, player)
     
 @alias('tk')
 @name('togglekill')
@@ -423,6 +427,10 @@ def toggle_kill(connection, player = None):
     connection.protocol.send_chat('Killing has been toggled %s!' % on_off)
     connection.protocol.irc_say('* %s toggled killing %s' % (connection.name, 
         on_off))
+
+@admin
+def tkp(connection, player):
+    toggle_kill(connection, player)
 
 @name('ttk')
 @admin
@@ -555,23 +563,6 @@ def where(connection, value = None):
     x, y, z = connection.get_location()
     return '%s is in %s (%s, %s, %s)' % (connection.name,
         to_coordinates(x, y), int(x), int(y), int(z))
-
-@admin
-def god(connection, value = None):
-    if value is not None:
-        connection = get_player(connection.protocol, value)
-    elif connection not in connection.protocol.players:
-        raise ValueError()
-    connection.god = not connection.god
-    if connection.protocol.set_god_build:
-        connection.god_build = connection.god
-    else:
-        connection.god_build = False
-    if connection.god:
-        message = '%s entered GOD MODE!' % connection.name
-    else:
-        message = '%s returned to being a mere human' % connection.name
-    connection.protocol.send_chat(message, irc = True)
 
 @name('godbuild')
 @admin
@@ -915,6 +906,8 @@ command_list = [
     rules,
     toggle_build,
     toggle_kill,
+    tkp,
+    tbp,
     toggle_teamkill,
     teleport,
     tpsilent,
@@ -922,7 +915,6 @@ command_list = [
     move,
     unstick,
     where,
-    god,
     god_build,
     fly,
     invisible,

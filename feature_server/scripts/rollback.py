@@ -149,10 +149,10 @@ def apply_script(protocol, connection, config):
             end_x, end_y, ignore_indestructable):
             surface = {}
             block_action = BlockAction()
-            block_action.player_id = 31
+            block_action.player_id = 255
             set_color = SetColor()
             set_color.value = make_color(*NON_SURFACE_COLOR)
-            set_color.player_id = 31
+            set_color.player_id = 255
             self.send_contained(set_color, save = True)
             old = cur.copy()
             check_protected = hasattr(protocol, 'protected')

@@ -76,18 +76,16 @@
         "color" : [0, 255, 0]
     },
     "rights" : {
-        "moderator" : ["kick", "ip", "whowas", "fog", "ban", "banip",
+        "moderator" : ["kick", "ip", "whowas", "ban", "banip",
             "unban", "undoban", "mute", "unmute", "kill", "heal", "switch",
-            "setbalance", "togglebuild", "togglekill", "toggleteamkill",
-            "teleport", "tpsilent", "goto", "move", "unstick", "where",
-            "invisible", "revertrotation", "rotationadd", "hban", "tban",
+            "togglebuild", "togglekill", "teleport", "tpsilent", "goto",
+            "move", "unstick", "where", "invisible", "hban", "tban",
             "dban", "cancel", "jail", "free", "jailed", "jailbreak", "griefcheck",
-            "srap", "trust", "staff", "tm", "pause"],
+            "srap", "rapid", "trust", "staff", "tm", "map", "advance"],
         "guard" : ["from", "cancel", "griefcheck", "invisible", "ip",
-            "kick", "tpsilent", "kill", "mute", "unmute", "tm", "togglebuild",
-            "togglekill", "whowas", "jail", "free", "jailed", "jailbreak",
-            "staff", "hackinfo", "hban", "tban"],
-        "builder" : ["god", "goto"]
+            "kick", "tpsilent", "kill", "mute", "unmute", "tm", "tbp",
+            "tkp", "whowas", "jail", "free", "jailed", "jailbreak",
+            "staff", "hackinfo", "hban", "tban"]
     },
     "ssh" : {
         "enabled" : false,
@@ -124,17 +122,26 @@
         "chatprefix" : "."
     },
     "scripts" : [
-        "welcome",
-        "rollback",
-        "protect",
+        "afk",
+        "aimbot2",
+        "analyze",
+        "banhammer",
+        "blockinfo",
+        "checkban",
+        "hacktools",
         "map_extensions",
-        "airstrike",
-        "squad",
-        "disco",
-        "votekick",
-        "trusted",
+        "medkit",
+        "paint",
         "ratio",
-        "memcheck"
+        "RDAdminbot",
+        "reloadconfig",
+        "srapid",
+        "staff",
+        "teamchat",
+        "teamchat_mute",
+        "timedmute",
+        "trusted",
+        "votekick"
     ],
     
     "squad_respawn_time" : 45,

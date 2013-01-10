@@ -1,7 +1,6 @@
 from twisted.internet.task import LoopingCall
 from pyspades.constants import *
 from math import sqrt, cos, acos, pi, tan
-from twisted.internet.reactor import seconds
 from commands import add, admin, get_player
 from twisted.internet import reactor
 import re
@@ -141,23 +140,19 @@ def accuracy_player(player, name_info = True):
     return s
 
 add(accuracy)
+
 @admin
 def hackinfo(connection, name):
     player = get_player(connection.protocol, name)
     return hackinfo_player(player)
 
-
 def hackinfo_player(player):
     info = "%s #%s (%s) has an accuracy of: " % (player.name, player.player_id, player.address[0])
     info += accuracy_player(player, False)
-    info += " Ping: %s ms." % (player.latency)
-    info +=' Weapon: %s.' % (player.weapon_object.name)
     ratio = player.ratio_kills/float(max(1,player.ratio_deaths))
-    info += " Kill-death ratio of %.2f (%s kills, %s deaths, %.2f kills per minute)." % (ratio, player.ratio_kills, player.ratio_deaths, player.ratio_kills/((seconds() - player.time_login)/60))
+    info += " Kill-death ratio of %.2f (%s kills, %s deaths)." % (ratio, player.ratio_kills, player.ratio_deaths)
     info += " %i kills in the last %i seconds." % (player.get_kill_count(), KILL_TIME)
     info += " %i headshot snaps in the last %i seconds." % (player.get_headshot_snap_count(), HEADSHOT_SNAP_TIME)
-    info +=' Current kill streak is %s. Best is %s kills.' % (player.streak, player.best_streak)
-    info += " HP: %s" % ( player.hp)
     return info
 
 add(hackinfo)

@@ -36,7 +36,7 @@ def paint(connection, player = None):
 add(paint)
 
 def paint_block(protocol, player, x, y, z, color):
-    if x < 0 or y < 0 or z < 0 or x >= 512 or y >= 512 or z >= 62:
+    if x < 0 or y < 0 or z < 0 or x >= 512 or y >= 512 or z >= 63:
         return False
     if protocol.map.get_color(x, y, z) == color:
         return False
