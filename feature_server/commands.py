@@ -155,19 +155,22 @@ def ban(connection, value, *arg):
 
 @admin
 def hban(connection, value, *arg):
-    duration, reason = get_ban_arguments(connection, [60, *arg])
+    arg.insert(0, 60)
+    duration, reason = get_ban_arguments(connection, arg)
     player = get_player(connection.protocol, value)
     player.ban(reason, duration)
 
 @admin
 def tban(connection, value, *arg):
-    duration, reason = get_ban_arguments(connection, [360, *arg])
+    arg.insert(0, 360)
+    duration, reason = get_ban_arguments(connection, arg)
     player = get_player(connection.protocol, value)
     player.ban(reason, duration)
 
 @admin
 def dban(connection, value, *arg):
-    duration, reason = get_ban_arguments(connection, [1440, *arg])
+    arg.insert(0, 1440)
+    duration, reason = get_ban_arguments(connection, arg)
     player = get_player(connection.protocol, value)
     player.ban(reason, duration)
 
