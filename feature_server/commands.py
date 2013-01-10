@@ -291,7 +291,7 @@ def login(connection, username, password):
             connection.login_retries)
     if user_type in connection.user_types:
         return "You're already logged in as %s" % user_type
-    connection.on_user_login(user_type, True)
+    connection.on_user_login(user_type, True, username)
     return False
 
 def pm(connection, value, *arg):

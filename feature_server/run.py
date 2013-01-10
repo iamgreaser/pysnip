@@ -432,7 +432,7 @@ class FeatureConnection(ServerConnection):
             reason)
         self.kick(reason)
     
-    def on_user_login(self, user_type, verbose = True):
+    def on_user_login(self, user_type, verbose = True, who = None):
         if user_type == 'admin':
             self.admin = True
             self.speedhack_detect = False
@@ -441,6 +441,8 @@ class FeatureConnection(ServerConnection):
         self.rights.update(rights)
         if verbose:
             message = ' logged in as %s' % (user_type)
+            if who is not None:
+                message += ' (%s)' % (who)
             self.send_chat('You' + message)
             self.protocol.irc_say("* " + self.name + message)
     
