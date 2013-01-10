@@ -388,7 +388,7 @@ def apply_script(protocol, connection, config):
             send_others(input_data)
         paused = property(_get_paused, _set_paused)
         
-        def on_user_login(self, user_type, verbose = True):
+        def on_user_login(self, user_type, verbose = True, who = None):
             if user_type == 'admin':
                 self.paused = False
             connection.on_user_login(self, user_type, verbose)

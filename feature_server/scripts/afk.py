@@ -84,7 +84,7 @@ def apply_script(protocol, connection, config):
             self.afk_kick_call = None
             connection.on_disconnect(self)
         
-        def on_user_login(self, user_type, verbose = True):
+        def on_user_login(self, user_type, verbose = True, who = None):
             if user_type in ('admin', 'trusted'):
                 if self.afk_kick_call and self.afk_kick_call.active():
                     self.afk_kick_call.cancel()
