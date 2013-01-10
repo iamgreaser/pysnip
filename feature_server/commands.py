@@ -291,7 +291,8 @@ def login(connection, username, password):
             connection.login_retries)
     if user_type in connection.user_types:
         return "You're already logged in as %s" % user_type
-    return connection.on_user_login(user_type, True)
+    connection.send_chat(connection.on_user_login(user_type, True))
+    return False
 
 def pm(connection, value, *arg):
     player = get_player(connection.protocol, value)
