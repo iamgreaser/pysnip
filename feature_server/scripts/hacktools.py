@@ -391,7 +391,7 @@ def apply_script(protocol, connection, config):
         def on_user_login(self, user_type, verbose = True, who = None):
             if user_type == 'admin':
                 self.paused = False
-            connection.on_user_login(self, user_type, verbose)
+            connection.on_user_login(self, user_type, verbose, who)
         
         def on_reset(self):
             # clear a queued spawn BEFORE unpausing

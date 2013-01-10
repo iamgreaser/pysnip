@@ -89,7 +89,7 @@ def apply_script(protocol, connection, config):
                 if self.afk_kick_call and self.afk_kick_call.active():
                     self.afk_kick_call.cancel()
                 self.afk_kick_call = None
-            return connection.on_user_login(self, user_type, verbose)
+            return connection.on_user_login(self, user_type, verbose, who)
         
         def on_connect(self):
             if time_limit:
