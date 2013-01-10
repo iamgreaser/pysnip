@@ -432,7 +432,13 @@ class FeatureConnection(ServerConnection):
             reason)
         self.kick(reason)
     
-    def on_user_login(self, user_type, verbose = True, who = None):
+    def on_user_login(self, user_type, *arg): #verbose = True, who = None):
+        verbose = False
+        who = None
+        if len(arg) > 0:
+            verbose = arg[0]
+            if len(arg) > 1:
+                who = arg[2]
         if user_type == 'admin':
             self.admin = True
             self.speedhack_detect = False
