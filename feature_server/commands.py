@@ -313,9 +313,11 @@ def to_admin(connection, *arg):
             prefix = '\x0304' + prefix + '\x0f'
         irc_relay.send(prefix + ' <%s> %s' % (connection.name, message))
     for player in protocol.players.values():
-        if player.admin and player is not connection:
-            player.send_chat('To ADMINS from %s: %s' % 
-                (connection.name, message))
+        for type in ['admin', 'moderator', 'guard']:
+            if type in player.user_types and player is not connection:
+                player.send_chat('To ADMINS from %s: %s' % 
+                    (connection.name, message))
+                continue
     return 'Message sent to admins'
 
 def streak(connection, name = None):
