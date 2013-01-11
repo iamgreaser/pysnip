@@ -261,14 +261,14 @@ def apply_script(protocol, connection, config):
                         reactor.callLater(1,fill_weapon,self)
                 
             return connection.on_secondary_fire_set(self, secondary)
-                def on_grenade(self, time_left):
-                        if self.protocol.nade_banned:    
-                                pass
-                        else:
-                                return connection.on_grenade(self,time_left)
+        def on_grenade(self, time_left):
+                if self.protocol.nade_banned:    
+                        pass
+                else:
+                        return connection.on_grenade(self,time_left)
         def on_refill(self):
-                        if self.protocol.nade_banned:
-                                self.grenades = 0
+            if self.protocol.nade_banned:
+                self.grenades = 0
             if self.protocol.spade_only:
                 reactor.callLater(.1,empty_weapon_full,self)
             return connection.on_refill(self)
@@ -277,14 +277,14 @@ def apply_script(protocol, connection, config):
                 reactor.callLater(.1,empty_weapon_full,self)
             return connection.on_shoot_set(self, fire)
         def on_spawn(self, pos):
-                        if self.protocol.nade_banned:
-                                self.grenades = 0
+            if self.protocol.nade_banned:
+                self.grenades = 0
             if self.protocol.spade_only:
                 reactor.callLater(.1,empty_weapon_full,self)
             return connection.on_spawn(self, pos)
         def on_chat(self, value, global_message):
-                        if self.no_caps:
-                                value = value.lower()
+            if self.no_caps:
+                value = value.lower()
             if slur_match(self, value):
                 reactor.callLater(0.0, slurpunish, self)
             return connection.on_chat(self, value, global_message)
