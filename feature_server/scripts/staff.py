@@ -8,7 +8,9 @@ def staff(connection):
         if conn.admin:
             admin_message += "%s [A], " % conn.name
         elif conn.user_types is not None:
-            if conn.user_types.guard:
+            if conn.user_types.moderator:
+                admin_message += "%s [M], " % conn.name
+            elif conn.user_types.guard:
                 admin_message += "%s [G], " % conn.name
             elif conn.user_types.trusted:
                 admin_message += "%s [T], " % conn.name
