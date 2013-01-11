@@ -155,7 +155,7 @@ def togglenade(connection):
             player.grenades = 0            
     else:
         message = "Grenades are enabled"
-                for player in protocol.players.itervalues():
+        for player in protocol.players.itervalues():
             player.grenades = 3
     protocol.send_chat(message, irc = True)
 add(togglenade)
