@@ -19,7 +19,7 @@ def staff(connection):
     else:
         admin_message = admin_message[:-2]
         if connection not in connection.protocol.players:
-            admin_message += "\n [A]dmin [G]uard [T]rusted"
+            admin_message += "\n [A]dmin [M]oderator [G]uard [T]rusted"
         else:
             connection.send_chat("[A]dmin [M]oderator [G]uard [T]rusted")
     return admin_message
