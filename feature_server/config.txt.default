@@ -82,7 +82,7 @@
             "togglebuild", "togglekill", "teleport", "tpsilent", "goto",
             "move", "unstick", "where", "invisible", "hban", "tban",
             "dban", "cancel", "jail", "free", "jailed", "jailbreak", "griefcheck",
-            "srap", "rapid", "trust", "staff", "tm", "map", "advance", "from"],
+            "srap", "rapid", "trust", "staff", "tm", "map", "advance", "from", "rollback"],
         "guard" : ["from", "cancel", "griefcheck", "invisible", "ip",
             "kick", "tpsilent", "kill", "mute", "unmute", "tm", "tbp",
             "tkp", "whowas", "jail", "free", "jailed", "jailbreak",

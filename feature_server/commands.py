@@ -267,7 +267,11 @@ def help(connection):
     """
     This help
     """
-    if connection.protocol.help is not None and not connection.admin:
+    admin = False
+    for i in ['admin', 'moderator', 'guard']:
+        if i in connection.user_types:
+            admin = True
+    if connection.protocol.help is not None and not admin:
         connection.send_lines(connection.protocol.help)
     else:
         names = [command.func_name for command in command_list
