@@ -945,7 +945,9 @@ command_list = [
     server_info,
     scripts,
     weapon,
-    mapname
+    mapname,
+    hban,
+    tban
 ]
 
 def add(func, name = None):
