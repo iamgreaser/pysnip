@@ -178,6 +178,7 @@ add(togglespade)
 def add_toggle_wpn(weapon_token):
 	banned_name = WPN_SHORTCUT_LIST[weapon_token]
 	weapon_name = WPN_NAME_LIST[weapon_token]
+    @admin
 	def _f1(connection):
 		protocol = connection.protocol
 		protocol.wpn_banned[weapon_token] = not protocol.wpn_banned[weapon_token]
