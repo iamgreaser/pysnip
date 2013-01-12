@@ -23,14 +23,14 @@ add(trust)
 
 def apply_script(protocol, connection, config):
     class TrustedConnection(connection):
-        def on_user_login(self, user_type, verbose = True):
+        def on_user_login(self, user_type, verbose = True, who = None):
             if user_type == 'trusted':
                 self.speedhack_detect = False
                 votekick = getattr(self.protocol, 'votekick', None)
                 if votekick and votekick.victim is self:
                     votekick.end(S_RESULT_TRUSTED)
                     self.protocol.votekick = None
-            return connection.on_user_login(self, user_type, verbose)
+            return connection.on_user_login(self, user_type, verbose, who)
     
     class TrustedProtocol(protocol):        
         def on_votekick_start(self, instigator, victim, reason):

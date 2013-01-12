@@ -244,7 +244,6 @@ def toggle_pause(connection, player = None):
         
 
 @name('toggleheadshot')
-@alias('ths')
 @admin
 def toggle_headshot(connection, player):
     protocol = connection.protocol
