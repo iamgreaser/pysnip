@@ -163,6 +163,7 @@ def toggle_spy(connection, player = None):
     
     player.spy = spy = not player.spy
     player.killing = not spy
+    player.god_build = spy
     if spy and player.invisible:
         # spy and invisibility don't get along nicely, the latter doesn't know
         # about the multiteaming when sending out create_player packets

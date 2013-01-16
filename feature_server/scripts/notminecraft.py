@@ -15,10 +15,17 @@ def apply_script(protocol, connection, config):
         
         def notminecraft_check_kills(self, k):
             # NOTE: True on FAIL!
-            if not self.god and not self.user_types.admin and not self.user_types.trusted:
+            p = True
+            for i in ['admin', 'moderator', 'guard', 'trusted']:
+                if i in self.user_types:
+                    p = False
+            if self.god:
+                p = False
+
+            if not p:
                 if self.notminecraft_kills < k:
                     return True
-            
+
             return False
         
         def on_kill(self, killer, type, grenade):

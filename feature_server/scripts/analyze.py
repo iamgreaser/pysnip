@@ -1,18 +1,3 @@
-"""
-analyze
-by a_girl
-
-/analyze [target] to show a detailed analysis of a players shots if they hit somone.  
-	hit player, distance, dT in miliseconds (Delta Time- Time since previous shot that
-	hit someone.  Useful for detecting multiple bullet or rapid hacks), weapon, what 
-	body part it hit, and a basic counter that displays the number of hits 
-	of that type.
-/analyze with  no arguments will disalbe it.
-
-/an is an alias of /analyze
-
-"""
-
 from twisted.internet.reactor import seconds
 from pyspades.collision import distance_3d_vector
 from pyspades.server import position_data

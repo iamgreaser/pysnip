@@ -3,9 +3,10 @@
 # by topologist June 30th 2012
 
 from scheduler import Scheduler
-from commands import add, admin, get_player, join_arguments, name
+from commands import add, admin, get_player, join_arguments, name, alias
 
 @name('tm')
+@alias('timedmute')
 @admin
 def timed_mute(connection, *args):
   protocol = connection.protocol

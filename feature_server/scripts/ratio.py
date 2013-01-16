@@ -8,7 +8,7 @@ Maintainer: mat^2
 from commands import get_player, add
 
 # "ratio" must be AFTER "votekick" in the config.txt script list
-RATIO_ON_VOTEKICK = False
+RATIO_ON_VOTEKICK = True
 IRC_ONLY = False
 
 def ratio(connection, user=None):

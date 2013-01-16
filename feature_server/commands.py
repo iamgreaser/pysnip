@@ -274,8 +274,7 @@ def help(connection):
     if connection.protocol.help is not None and not admin:
         connection.send_lines(connection.protocol.help)
     else:
-        names = [command.func_name for command in command_list
-            if command.func_name in connection.rights]
+        names = [x for x in connection.rights]
         return 'Available commands: %s' % (', '.join(names))
 
 def login(connection, username, password):

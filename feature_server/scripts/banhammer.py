@@ -21,9 +21,7 @@ def apply_script(protocol, connection, config):
         shotgun_nospread_count = 0 
         dt_reset_count = 0
         dt_event_count = 0
-        mb_event_count = 0
-        fls_count = 0
-        prev_fls = 0		
+        mb_event_count = 0	
         prevdist = None
         presdist = None
         positionz = (0, 0, 0)
@@ -86,14 +84,11 @@ def apply_script(protocol, connection, config):
 
                     curx, cury, curz = self.world_object.position.x, self.world_object.position.y, self.world_object.position.z
                     self.positionz = (curx, cury, curz)
-                    self.positionz_xy = (curx, cury, 0)
                      
                     tarx, tary, tarz = hit_player.world_object.position.x, hit_player.world_object.position.y, hit_player.world_object.position.z
-                    targetpos = (tarx, tary, tarz)
-                    targetpos_xy = (tarx, tary, 0)					
+                    targetpos = (tarx, tary, tarz)      
                     
                     dist1 = distance(self, self.positionz, targetpos)
-                    dist2 = distance(self, self.positionz_xy, targetpos_xy)
                     
                     weap1 = self.weapon_object.name
                     self.pres_time1 = seconds()     
@@ -115,22 +110,7 @@ def apply_script(protocol, connection, config):
                             theta = 0
                         else:
                             theta = vector_angle(self, self.prev_xyz, targetpos)
-                            
-                    if dist2 >= 125.5:
-                        if seconds() - self.prev_fls >= 3:
-                            self.prev_fls = seconds()
-                            self.fls_count +=1
-                            if self.fls_count >= 3:
-                                self.fls_count = 0
-                                message = 'Fog Line Hit Detected: %s #%s (%s) Weapon: %s %s xyDist: %.1f xyzDist: %.1f' % (self.name, self.player_id, self.address[0], self.weap1, body_part1, dist2, dist1)
-                                irc_relay = self.protocol.irc_relay
-                                for adminz in self.protocol.players.values():
-                                    if adminz.admin:
-                                        adminz.send_chat(message)
-                                if irc_relay.factory.bot and irc_relay.factory.bot.colors:
-                                    message = '\x0304' + message + '\x0f'
-                                irc_relay.send(message)
-                        					
+                        
                     if weap1 == "Shotgun":
                         if dist1 > 23:
                             if dt1 < 8:
@@ -172,7 +152,7 @@ def apply_script(protocol, connection, config):
                             self.prev_nospread = self.pres_nospread
                             if nospread_timer >= 600:
                                     self.shotun_nospread_count = 1
-                            elif self.shotgun_nospread_count >= 4:
+                            elif self.shotgun_nospread_count >= 3:
                                 self.ban('Hack Detected - No Spread    IGN: %s #%d' % (self.name, self.player_id), 0) #this ban is for the shotty no spread hack. 0 minutes = Permanent
                                 return False     
 
@@ -204,7 +184,7 @@ def apply_script(protocol, connection, config):
                                 if theta >= 10:
                                     self.smg_snap_count += 1
                                     message = 'SMG Snap Detected: %.2f degrees. %s #%s (%s)' % (theta, self.name, self.player_id, self.address[0])
-                                    for adminz in self.protocol.players.values():
+                                    for adminz in self.protocol.player.values():
                                         if adminz.admin:
                                             adminz.send_chat(message)
                                     irc_relay = self.protocol.irc_relay 

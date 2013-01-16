@@ -40,8 +40,8 @@ from commands import add, admin, get_player, name
 
 SHADOW_INTEL = True # if True, shows where the intel used to be before taken
 REVEAL_ENEMIES = True # if True, mimics old intel reveal behavior when captured
-VV_ENABLED = True # if True, enables spotting by pressing SNEAK two times
-CHAT_MARKERS = True # if True, enables !build !tunnel etc teamchat triggers
+VV_ENABLED = False # if True, enables spotting by pressing SNEAK two times
+CHAT_MARKERS = False # if True, enables !build !tunnel etc teamchat triggers
 
 S_SPOTTED = '(enemy spotted at {coords}!)'
 S_CLEARED = 'Markers cleared'

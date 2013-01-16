@@ -49,6 +49,7 @@ S_UNLOCKED_TIP = 'Each {streak}-kill streak will clear you for one dangerzone'
 S_DZ_END = '{coords} is no longer a Dangerzone'
 S_IN_DZ = 'You are in a Dangerzone, get out!'
 
+@alias('airstrike')
 @alias('dz')
 def dangerzone(connection, coords = None):
     protocol = connection.protocol

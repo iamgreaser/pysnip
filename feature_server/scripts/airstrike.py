@@ -15,7 +15,7 @@ from pyspades.constants import UPDATE_FREQUENCY
 from commands import alias, add
 
 SCORE_REQUIREMENT = 0
-STREAK_REQUIREMENT = 8
+STREAK_REQUIREMENT = 10
 TEAM_COOLDOWN = 25.0
 REFILL_ON_AIRSTRIKE = True # set to False if you don't want to be healed
 
