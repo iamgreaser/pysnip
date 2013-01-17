@@ -41,10 +41,10 @@
     "maps" : ["random", "classicgen"],
     "random_rotation" : false,
     
-    "respawn_time" : 30,
-    "respawn_waves" : true,
-    "friendly_fire" : false,
-    "grief_friendly_fire_time" : 5,
+    "respawn_time" : 12,
+    "respawn_waves" : false,
+    "friendly_fire" : "on_grief",
+    "grief_friendly_fire_time" : 2,
     "spade_teamkills_on_grief" : false,
     "balanced_teams" : 1,
     "teamswitch_interval" : 0,
@@ -60,7 +60,7 @@
     "votemap_time" : 120,
     "votemap_percentage" : 80,
     
-    "melee_damage" : 80,
+    "melee_damage" : 100,
     "fall_damage" : true,
     "user_blocks_only" : false,
     "set_god_build" : false,
@@ -68,7 +68,7 @@
     "time_announcements" : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 30, 60, 120, 180,
                             240, 300, 600, 900, 1200, 1800, 2400, 3000],
     "login_retries" : 3,
-    "default_ban_duration" : 1440,
+    "default_ban_duration" : 10080,
     
     "logfile" : "./logs/log.txt",
     "rotate_daily" : true,
@@ -98,7 +98,7 @@
             "invisible", "rapid", "srap",
             "map", "advance",
             "kill", "heal", "spy",
-            "say"
+            "say", "cancel"
         ],
 
         "guard" : [
@@ -109,7 +109,7 @@
             "mute", "timedmute", "unmute",
             "jail", "free", "jailed", "jailbreak",
             "kill", "say", "staff",
-            "ip", "whowas", "from"
+            "ip", "whowas", "from", "cancel"
         ]
     },
     "ssh" : {
@@ -134,13 +134,13 @@
         ]
     },
     "irc" : {
-        "enabled" : false,
+        "enabled" : true,
         "nickname" : "pycubed",
         "username" : "pycubed",
         "realname" : "pycubed server bot",
-        "server" : "irc.minit.nu",
+        "server" : "irc.outs.in",
         "port" : 6667,
-        "channel" : "#minit.bots",
+        "channel" : "#minit.",
         "password" : "",
         "commandprefix" : "!",
         "chatprefix" : "."
