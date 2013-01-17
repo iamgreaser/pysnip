@@ -99,7 +99,7 @@
             "map", "advance",
             "kill", "heal", "spy",
             "say"
-        ]
+        ],
 
         "guard" : [
             "hackinfo", "griefcheck",
