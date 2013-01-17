@@ -12,8 +12,15 @@
         "/ADMIN     Lets you talk to the admins privately. Do not abuse it."
     ],
     "tips" : [
-        "Here you can deploy airstrikes, form squads and more!  Type /help for info",
-        "The spade does melee damage!  Use it wisely"
+        "If you suspect somebody of cheating, please let us know with /admin!",
+        "Visit the Minit forum at http://www.minit.nu",
+        "Please speak English.",
+        "If you cheat here, you will be banned. Please, save everyone some trouble and just don't do it.",
+        "Do not destroy buildings with potential tactical value!",
+        "Do not place blocks on your teammates.",
+        "Camping and spawncamping are allowed. Don't report or votekick people for these things.",
+        "Don't cover your tent in blocks!",
+        "Go to http://www.minit.nu/ to chat with admins and other players."
     ],
     "tip_frequency" : 5,
     "rules" : [
@@ -70,23 +77,40 @@
     
     "team1" : {
         "name" : "Blue",
-        "color" : [0, 0, 255]
+        "color" : [66, 66, 163]
     },
     "team2" : {
         "name" : "Green",
-        "color" : [0, 255, 0]
+        "color" : [66, 163, 66]
     },
     "rights" : {
-        "moderator" : ["kick", "ip", "whowas", "ban", "banip",
-            "unban", "undoban", "mute", "unmute", "kill", "heal", "switch",
-            "togglebuild", "togglekill", "teleport", "tpsilent", "goto",
-            "move", "unstick", "where", "invisible", "hban", "tban",
-            "dban", "cancel", "jail", "free", "jailed", "jailbreak", "griefcheck",
-            "srap", "rapid", "trust", "staff", "tm", "map", "advance", "from", "hackinfo", "togglevotekick"],
-        "guard" : ["from", "cancel", "griefcheck", "invisible", "ip",
-            "kick", "tpsilent", "kill", "mute", "unmute", "tm", "tbp",
-            "tkp", "whowas", "jail", "free", "jailed", "jailbreak",
-            "staff", "hackinfo", "hban", "tban"]
+        "moderator" : [
+            "hackinfo", "griefcheck",
+            "togglekill", "togglebuild", "tkp", "tbp",
+            "kick", "ban", "banip", "hban", "tban", "dban",
+            "unban", "undoban",
+            "ip", "whowas", "from",
+            "cancel", "togglevotekick",
+            "mute", "timedmute", "unmute",
+            "jail", "jailed", "free", "jailbreak",
+            "trust", "staff",
+            "unstick", "move", "teleport", "tpsilent", "goto",
+            "invisible", "rapid", "srap",
+            "map", "advance",
+            "kill", "heal", "spy",
+            "say"
+        ]
+
+        "guard" : [
+            "hackinfo", "griefcheck",
+            "tkp", "tbp",
+            "kick", "hban", "tban", "dban",
+            "unstick", "move",
+            "mute", "timedmute", "unmute",
+            "jail", "free", "jailed", "jailbreak",
+            "kill", "say", "staff",
+            "ip", "whowas", "from"
+        ]
     },
     "ssh" : {
         "enabled" : false,
@@ -96,17 +120,16 @@
         }
     },
     "status_server" : {
-        "enabled" : false,
+        "enabled" : true,
         "port" : 32886
     },
     "ban_publish" : {
-        "enabled" : false,
+        "enabled" : true,
         "port" : 32885
     },
     "ban_subscribe" : {
         "enabled" : true,
         "urls" : [
-            ["http://www.blacklist.spadille.net/subscribe.json", []],
             ["http://forum.minit.nu/superbanlist.json", []]
         ]
     },
@@ -134,7 +157,6 @@
         "medkit",
         "paint",
         "ratio",
-        "RDAdminbot",
         "reloadconfig",
         "srapid",
         "staff",
