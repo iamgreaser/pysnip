@@ -91,7 +91,7 @@
             "unban", "undoban",
             "ip", "whowas", "from",
             "cancel", "togglevotekick",
-            "mute", "timedmute", "unmute",
+            "mute", "tm", "unmute",
             "jail", "jailed", "free", "jailbreak",
             "trust", "staff",
             "unstick", "move", "teleport", "tpsilent", "goto",
@@ -106,7 +106,7 @@
             "tkp", "tbp",
             "kick", "hban", "tban", "dban",
             "unstick", "move",
-            "mute", "timedmute", "unmute",
+            "mute", "tm", "unmute",
             "jail", "free", "jailed", "jailbreak",
             "kill", "say", "staff",
             "ip", "whowas", "from", "cancel"
