@@ -393,7 +393,6 @@ def set_balance(connection, value):
     connection.protocol.irc_say('* %s set balanced teams to %s' % (
         connection.name, value))
 
-@alias('tb')
 @name('togglebuild')
 @admin
 def toggle_build(connection, player = None):
@@ -414,10 +413,10 @@ def toggle_build(connection, player = None):
         on_off))
 
 @admin
+@alias('tb')
 def tbp(connection, player):
     toggle_build(connection, player)
     
-@alias('tk')
 @name('togglekill')
 @admin
 def toggle_kill(connection, player = None):
@@ -438,6 +437,7 @@ def toggle_kill(connection, player = None):
         on_off))
 
 @admin
+@alias('tk')
 def tkp(connection, player):
     toggle_kill(connection, player)
 

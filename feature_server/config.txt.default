@@ -109,7 +109,8 @@
             "mute", "tm", "unmute",
             "jail", "free", "jailed", "jailbreak",
             "kill", "say", "staff",
-            "ip", "whowas", "from", "cancel"
+            "ip", "whowas", "from", "cancel",
+            "invisible", "tpsilent"
         ]
     },
     "ssh" : {
