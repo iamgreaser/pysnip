@@ -987,11 +987,12 @@ try:
 
 	@name('fromip')
 	def from_ip(connection, value = None):
+		_value = value
 		if value is None:
 			raise ValueError()
 		record = database.record_by_addr(value)
 		if record is None:
-			return 'Player location could not be determined.'
+			return 'Location could not be determined.'
 		items = []
 		for entry in ('country_name', 'city', 'region_name'):
 			# sometimes, the record entries are numbers or nonexistent
@@ -1004,7 +1005,7 @@ try:
 			except ValueError:
 				pass
 			items.append(value)
-		return '%s is from %s' % (value, ', '.join(items))
+		return '%s is from %s' % (_value, ', '.join(items))
 
 	add(where_from)
 	add(from_ip)
