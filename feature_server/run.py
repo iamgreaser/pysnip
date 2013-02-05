@@ -123,7 +123,7 @@ CHAT_PER_SECOND = 0.5
 
 class FeatureConnection(ServerConnection):
     printable_name = None
-	forum_name = None
+    forum_name = None
     admin = False
     last_switch = None
     mute = False
@@ -434,7 +434,7 @@ class FeatureConnection(ServerConnection):
         self.kick(reason)
     
     def on_user_login(self, user_type, verbose = True, who = None):
-		self.forum_name = who
+        self.forum_name = who
         if user_type == 'admin':
             self.admin = True
             self.speedhack_detect = False
