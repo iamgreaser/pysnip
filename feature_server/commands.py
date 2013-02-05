@@ -151,6 +151,10 @@ def get_ban_arguments(connection, arg):
 def ban(connection, value, *arg):
 	duration, reason = get_ban_arguments(connection, arg)
 	player = get_player(connection.protocol, value)
+	time = __import__('time').strftime('%X %x %Z')
+	reason = '[IGN: %s] [By: %s] [Time: %s] [Duration: %s]' % (
+		player.name, connection.forum_name, time, duration
+	)
 	player.ban(reason, duration)
 
 @admin
@@ -946,7 +950,8 @@ command_list = [
 	weapon,
 	mapname,
 	hban,
-	tban
+	tban,
+	dban
 ]
 
 def add(func, name = None):

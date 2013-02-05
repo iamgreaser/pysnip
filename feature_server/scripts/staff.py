@@ -6,14 +6,14 @@ def staff(connection):
     admin_message = "Admins logged in: "
     for conn in protocol.connections.values():
         if conn.admin:
-            admin_message += "%s [A], " % conn.name
+            admin_message += "%s [A: %s], " % ( conn.name, conn.forum_name )
         elif conn.user_types is not None:
             if conn.user_types.moderator:
-                admin_message += "%s [M], " % conn.name
+                admin_message += "%s [M: %s], " % ( conn.name, conn.forum_name )
             elif conn.user_types.guard:
-                admin_message += "%s [G], " % conn.name
+                admin_message += "%s [G: %s], " % ( conn.name, conn.forum_name )
             elif conn.user_types.trusted:
-                admin_message += "%s [T], " % conn.name
+                admin_message += "%s [T: %s], " % ( conn.name, conn.forum_name )
     if admin_message == "Admins logged in: ":
         admin_message = "No admins are logged in."
     else:
