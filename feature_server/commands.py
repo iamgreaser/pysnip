@@ -153,7 +153,7 @@ def ban(connection, value, *arg):
 	player = get_player(connection.protocol, value)
 	time = __import__('time').strftime('%X %x %Z')
 	reason = '[IGN: %s] [By: %s] [Time: %s] [Duration: %s] [Offense: %s]' % (
-		player.name, connection.forum_name if connection.hasattr('forum_name') else connection.name,
+		player.name, connection.forum_name if hasattr(connection, 'forum_name') else connection.name,
 		time, duration, reason
 	)
 	player.ban(reason, duration)
