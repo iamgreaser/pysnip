@@ -152,8 +152,8 @@ def ban(connection, value, *arg):
 	duration, reason = get_ban_arguments(connection, arg)
 	player = get_player(connection.protocol, value)
 	time = __import__('time').strftime('%X %x %Z')
-	reason = '[IGN: %s] [By: %s] [Time: %s] [Duration: %s]' % (
-		player.name, connection.forum_name, time, duration
+	reason = '[IGN: %s] [By: %s] [Time: %s] [Duration: %s] [Offense: %s]' % (
+		player.name, connection.forum_name, time, duration, reason
 	)
 	player.ban(reason, duration)
 
