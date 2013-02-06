@@ -29,11 +29,15 @@ def kick_afk(connection, minutes, amount = None):
     if minutes < 1:
         raise ValueError()
     to_kick = []
+    no_kick = False
     seconds = minutes * 60.0
     minutes_s = prettify_timespan(seconds)
     lower_bound = reactor.seconds() - seconds
     for conn in protocol.connections.values():
-        if not conn.admin and conn.last_activity < lower_bound:
+        for t in ('admin', 'moderator', 'guard', 'trusted'):
+            if t in conn.user_types:
+                no_kick = True
+        if not no_kick and conn.last_activity < lower_bound:
             to_kick.append(conn)
     if not to_kick:
         return S_NO_PLAYERS_INACTIVE.format(time = minutes_s)
@@ -85,7 +89,7 @@ def apply_script(protocol, connection, config):
             connection.on_disconnect(self)
         
         def on_user_login(self, user_type, verbose = True, who = None):
-            if user_type in ('admin', 'trusted'):
+            if user_type in ('admin', 'moderator', 'guard', 'trusted'):
                 if self.afk_kick_call and self.afk_kick_call.active():
                     self.afk_kick_call.cancel()
                 self.afk_kick_call = None
