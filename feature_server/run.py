@@ -417,7 +417,7 @@ class FeatureConnection(ServerConnection):
             irc_relay = self.protocol.irc_relay
             if irc_relay.factory.bot:
                 irc_relay.send(message)
-#            self.protocol.send_chat(message, irc = True)
+            self.protocol.send_chat('%s was banned.' % self.name, irc = False)
             self.protocol.on_ban(self, reason, duration)
             if self.address[0]=="127.0.0.1":
                 self.protocol.send_chat("Ban ignored: localhost")
