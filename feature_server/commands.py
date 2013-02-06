@@ -161,33 +161,34 @@ def ban(connection, value, *arg):
 @admin
 def hban(connection, value, *arg):
 	arg = (60,) + arg
-	duration, reason = get_ban_arguments(connection, arg)
-	player = get_player(connection.protocol, value)
-	player.ban(reason, duration)
+	ban(connection, value, arg)
 
 @admin
 def tban(connection, value, *arg):
 	arg = (360,) + arg
-	duration, reason = get_ban_arguments(connection, arg)
-	player = get_player(connection.protocol, value)
-	player.ban(reason, duration)
+	ban(connection, value, arg)
 
 @admin
 def dban(connection, value, *arg):
-	arg.insert(0, 1440)
-	duration, reason = get_ban_arguments(connection, arg)
-	player = get_player(connection.protocol, value)
-	player.ban(reason, duration)
+	arg = (1440,) + arg
+	ban(connection, value, arg)
 
 @admin
 def banip(connection, ip, *arg):
 	duration, reason = get_ban_arguments(connection, arg)
+	time = __import__('time').strftime('%X %x %Z')
+	reason = '[By: %s] [Time: %s] [Duration: %s] [Offense: %s]' % (
+		connection.forum_name if hasattr(connection, 'forum_name') else connection.name,
+		time, duration, reason
+	)
+
 	try:
 		connection.protocol.add_ban(ip, reason, duration)
 	except ValueError:
 		return 'Invalid IP address/network'
 	reason = ': ' + reason if reason is not None else ''
 	duration = duration or None
+
 	if duration is None:
 		return 'IP/network %s permabanned%s' % (ip, reason)
 	else:
