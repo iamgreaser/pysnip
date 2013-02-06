@@ -254,8 +254,8 @@ class ServerConnection(BaseConnection):
                 else:
                     self.on_team_changed(old_team)
                 self.set_weapon(contained.weapon, True)
-                if self.protocol.speedhack_detect:
-                    self.speedhack_detect = True
+#                if self.protocol.speedhack_detect:
+#                    self.speedhack_detect = True
                 self.rapid_hack_detect = True
                 if team.spectator:
                     if self.world_object is not None:
@@ -489,15 +489,15 @@ class ServerConnection(BaseConnection):
                     current_time = reactor.seconds()
                     last_time = self.last_block
                     self.last_block = current_time
-                    if (self.rapid_hack_detect and last_time is not None and
-                        current_time - last_time < interval):
-                        self.rapids.add(current_time)
-                        if self.rapids.check():
-                            start, end = self.rapids.get()
-                            if end - start < MAX_RAPID_SPEED:
-                                print 'RAPID HACK:', self.rapids.window
-                                self.on_hack_attempt('Rapid hack detected')
-                        return
+#                    if (self.rapid_hack_detect and last_time is not None and
+#                        current_time - last_time < interval):
+#                        self.rapids.add(current_time)
+#                        if self.rapids.check():
+#                            start, end = self.rapids.get()
+#                            if end - start < MAX_RAPID_SPEED:
+#                                print 'RAPID HACK:', self.rapids.window
+#                                self.on_hack_attempt('Rapid hack detected')
+#                        return
                     map = self.protocol.map
                     x = contained.x
                     y = contained.y
