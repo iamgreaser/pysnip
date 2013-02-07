@@ -161,17 +161,17 @@ def ban(connection, value, *arg):
 @admin
 def hban(connection, value, *arg):
 	arg = (60,) + arg
-	ban(connection, value, arg)
+	ban(connection, value, *arg)
 
 @admin
 def tban(connection, value, *arg):
 	arg = (360,) + arg
-	ban(connection, value, arg)
+	ban(connection, value, *arg)
 
 @admin
 def dban(connection, value, *arg):
 	arg = (1440,) + arg
-	ban(connection, value, arg)
+	ban(connection, value, *arg)
 
 @admin
 def banip(connection, ip, *arg):
