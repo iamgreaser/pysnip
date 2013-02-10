@@ -437,6 +437,7 @@ class FeatureConnection(ServerConnection):
         self.kick(reason)
     
     def on_user_login(self, user_type, verbose = True, who = None):
+        print '%s logged in as %s' % (who, user_type)
         self.forum_name = who
         if user_type == 'admin':
             self.admin = True
