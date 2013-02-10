@@ -284,10 +284,12 @@ def help(connection):
 		return 'Available commands: %s' % (', '.join(names))
 
 def login(connection, username, password):
+	import urllib
 	import urllib2
 	if connection not in connection.protocol.players:
 		raise KeyError()
-	user_type = urllib2.urlopen('http://forum.minit.nu/login_check.php?username=' + username + '&password=' + password).read()
+	q = { 'username' : username, 'password' : password }
+	user_type = urllib2.urlopen('http://forum.minit.nu/login_check.php?' + urllib.urlencode(q)).read()
 	if user_type == 'none':
 		if connection.login_retries is None:
 			connection.login_retries = connection.protocol.login_retries - 1
