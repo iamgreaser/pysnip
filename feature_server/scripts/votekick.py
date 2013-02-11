@@ -73,11 +73,7 @@ def start_votekick(connection, *args):
         raise ValueError()
     
     value = args[0]
-    try:
-        # vanilla aos behavior
-        victim = get_player(protocol, '#' + value)
-    except InvalidPlayer:
-        victim = get_player(protocol, value)
+    victim = get_player(protocol, value)
     reason = join_arguments(args[1:])
     
     try:
@@ -121,10 +117,7 @@ def togglevotekick(connection, *args):
     if len(args) == 0:
         protocol.votekick_enabled = not protocol.votekick_enabled
         return "Votekicking globally %s." % ['disabled', 'enabled'][protocol.votekick_enabled]
-    try:
-        player = get_player(protocol, '#' + args[0])
-    except InvalidPlayer:
-        player = get_player(protocol, args[0])
+    player = get_player(protocol, args[0])
     player.votekick_enabled = not player.votekick_enabled
     return "Votekicking is %s for %s." % (['disabled', 'enabled'][player.votekick_enabled], player.name)
 
@@ -155,7 +148,7 @@ class Votekick(object):
             raise VotekickFailure(S_SELF_VOTEKICK)
         elif protocol.get_required_votes() <= 0:
             raise VotekickFailure(S_NOT_ENOUGH_PLAYERS)
-        elif victim.admin or victim.rights.cancel:
+        elif victim.admin or victim.rights.cancel or (getattr(victim, 'trusted') and victim.trusted):
             raise VotekickFailure(S_VOTEKICK_IMMUNE)
         elif not instigator.admin and (last_votekick is not None and
             seconds() - last_votekick < cls.interval):
