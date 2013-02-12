@@ -148,7 +148,7 @@ class Votekick(object):
             raise VotekickFailure(S_SELF_VOTEKICK)
         elif protocol.get_required_votes() <= 0:
             raise VotekickFailure(S_NOT_ENOUGH_PLAYERS)
-        elif victim.admin or victim.rights.cancel or (getattr(victim, 'trusted') and victim.trusted):
+        elif victim.admin or victim.rights.cancel or (hasattr(victim, 'trusted') and victim.trusted):
             raise VotekickFailure(S_VOTEKICK_IMMUNE)
         elif not instigator.admin and (last_votekick is not None and
             seconds() - last_votekick < cls.interval):
