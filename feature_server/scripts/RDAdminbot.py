@@ -304,6 +304,7 @@ def apply_script(protocol, connection, config):
 			 reactor.callLater(0.5,checkname,self)
 			 if self.address[0] in self.protocol.muted:
 				 self.mute = True
+			 return connection.on_team_join(self, team)
 		def on_weapon_set(self, wpnid):
 			if self.protocol.wpn_banned[wpnid]:
 				self.send_chat("%s is disabled" % WPN_NAME_LIST[wpnid])
