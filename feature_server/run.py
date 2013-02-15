@@ -364,6 +364,8 @@ class FeatureConnection(ServerConnection):
         self.last_switch = reactor.seconds()
     
     def on_chat(self, value, global_message):
+        import string
+        value = ''.join(c for c in value if c in string.printable)
         if not self.mute:
             current_time = reactor.seconds()
             if self.last_chat is None:
