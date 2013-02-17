@@ -177,7 +177,7 @@ def dban(connection, value, *arg):
 def banip(connection, ip, *arg):
 	import time
 	duration, reason = get_ban_arguments(connection, arg)
-	ntime = time.strftime('%X %x %Z')
+	ntime = time.ctime( time.time() )
 	expires = time.ctime( time.time() + duration * 60 )
 	reason = '[By: %s] [Time: %s] [Duration: %s] [Expires: %s] [Offense: %s]' % (
 		connection.forum_name if hasattr(connection, 'forum_name') else connection.name,
