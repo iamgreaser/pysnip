@@ -156,7 +156,7 @@ def ban(connection, value, *arg):
 	player = get_player(connection.protocol, value)
 	reason = '[IGN: %s] [By: %s] [Time: %s] [Duration: %s] [Expires: %s] [Offense: %s]' % (
 		player.name, connection.forum_name if hasattr(connection, 'forum_name') else connection.name,
-		time, prettify_timestamp(duration * 60), expires, reason
+		time, prettify_timespan(duration * 60), expires, reason
 	)
 	player.ban(reason, duration)
 
