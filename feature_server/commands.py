@@ -149,12 +149,14 @@ def get_ban_arguments(connection, arg):
 
 @admin
 def ban(connection, value, *arg):
+	import time
 	duration, reason = get_ban_arguments(connection, arg)
+	ntime = time.ctime( time.time() )
+	expires = time.ctime( time.time() + duration * 60 )
 	player = get_player(connection.protocol, value)
-	time = __import__('time').strftime('%X %x %Z')
-	reason = '[IGN: %s] [By: %s] [Time: %s] [Duration: %s] [Offense: %s]' % (
+	reason = '[IGN: %s] [By: %s] [Time: %s] [Duration: %s] [Expires: %s] [Offense: %s]' % (
 		player.name, connection.forum_name if hasattr(connection, 'forum_name') else connection.name,
-		time, prettify_timestamp(duration * 60), reason
+		time, prettify_timestamp(duration * 60), expires, reason
 	)
 	player.ban(reason, duration)
 
