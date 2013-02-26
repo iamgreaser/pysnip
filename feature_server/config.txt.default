@@ -159,6 +159,7 @@
         "paint",
         "ratio",
         "reloadconfig",
+		"rollback",
         "srapid",
         "staff",
         "teamchat",
