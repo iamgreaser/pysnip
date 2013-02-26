@@ -159,7 +159,8 @@ class IRCBot(irc.IRCClient):
             alias = self.factory.aliases.get(user, user)
             if msg.startswith(self.factory.commandprefix) and (
                 user in self.owners or user in self.admins or
-                user in self.moderators or user in self.guards):
+                user in self.moderators or user in self.guards or
+				user in self.voices):
                 self.unaliased_name = user
                 self.name = prefix + alias
                 input = msg[len(self.factory.commandprefix):]
