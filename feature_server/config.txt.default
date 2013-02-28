@@ -105,12 +105,10 @@
             "hackinfo", "griefcheck",
             "tkp", "tbp",
             "kick", "hban", "tban", "dban",
-            "unstick", "move",
-            "mute", "tm", "unmute",
+            "unstick", "tm", "unmute",
             "jail", "free", "jailed", "jailbreak",
-            "kill", "say", "staff",
-            "ip", "whowas", "from", "cancel",
-            "invisible", "tpsilent"
+            "staff", "ip", "whowas", "from", "cancel",
+            "tpsilent"
         ]
     },
     "ssh" : {

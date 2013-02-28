@@ -163,7 +163,6 @@ def toggle_spy(connection, player = None):
     
     player.spy = spy = not player.spy
     player.killing = not spy
-    player.god_build = spy
     if spy and player.invisible:
         # spy and invisibility don't get along nicely, the latter doesn't know
         # about the multiteaming when sending out create_player packets
@@ -524,12 +523,16 @@ def apply_script(protocol, connection, config):
             return connection.on_hit(self, hit_amount, hit_player, type, grenade)
         
         def hit(self, value, by = None, type = WEAPON_KILL):
+            if by.spy:
+                return False
             friendly_fire = self.protocol.friendly_fire
             if by is not None and self.spy and friendly_fire != False:
                 return
             connection.hit(self, value, by, type)
         
         def on_kill(self, killer, type, grenade):
+            if killer.spy:
+                return False
             if self.pause_loop and self.pause_loop.running:
                 self.pause_loop.stop()
             return connection.on_kill(self, killer, type, grenade)
