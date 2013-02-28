@@ -523,7 +523,7 @@ def apply_script(protocol, connection, config):
             return connection.on_hit(self, hit_amount, hit_player, type, grenade)
         
         def hit(self, value, by = None, type = WEAPON_KILL):
-            if by.spy:
+            if hasattr(by, 'spy') and by.spy:
                 return False
             friendly_fire = self.protocol.friendly_fire
             if by is not None and self.spy and friendly_fire != False:
@@ -531,7 +531,7 @@ def apply_script(protocol, connection, config):
             connection.hit(self, value, by, type)
         
         def on_kill(self, killer, type, grenade):
-            if killer.spy:
+            if killer is not None and killer.spy:
                 return False
             if self.pause_loop and self.pause_loop.running:
                 self.pause_loop.stop()
