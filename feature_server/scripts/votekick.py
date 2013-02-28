@@ -61,6 +61,8 @@ def start_votekick(connection, *args):
         if args:
             raise KeyError()
         else:
+            if not protocol.votekick:
+                return 'No votekick in progress.'
             reply = '{instigator} is votekicking {victim}. ({needed} left)'
             return reply.format(instigator=protocol.votekick.instigator.name,
             victim=protocol.votekick.victim.name, needed=protocol.votekick.votes_remaining)
