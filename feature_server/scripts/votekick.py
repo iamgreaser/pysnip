@@ -56,8 +56,15 @@ class VotekickFailure(Exception):
 @name('votekick')
 def start_votekick(connection, *args):
     protocol = connection.protocol
+    
     if connection not in protocol.players:
-        raise KeyError()
+        if args:
+            raise KeyError()
+        else:
+            reply = '{instigator} is votekicking {victim}. ({needed} left)'
+            return reply.format(instigator=protocol.votekick.instigator.name,
+            victim=protocol.votekick.victim.name, needed=protocol.votekick.votes_remaining)
+
     player = connection
     
     if protocol.votekick_enabled == False:

@@ -152,9 +152,9 @@ def ban(connection, value, *arg):
 	import time
 	duration, reason = get_ban_arguments(connection, arg)
 	ntime = time.ctime( time.time() )
-	expires = time.ctime( time.time() + duration * 60 )
+	expires = time.ctime( time.time() + duration * 60 ) if duration != 0 else 'never'
 	player = get_player(connection.protocol, value)
-	reason = '[IGN: %s] [By: %s] [Time: %s] [Duration: %s] [Expires: %s] [Offense: %s]' % (
+	reason = '%s; %s; %s; %s; %s; %s' % (
 		player.name, connection.forum_name if hasattr(connection, 'forum_name') else connection.name,
 		ntime, prettify_timespan(duration * 60), expires, reason
 	)
@@ -180,8 +180,8 @@ def banip(connection, ip, *arg):
 	import time
 	duration, reason = get_ban_arguments(connection, arg)
 	ntime = time.ctime( time.time() )
-	expires = time.ctime( time.time() + duration * 60 )
-	reason = '[By: %s] [Time: %s] [Duration: %s] [Expires: %s] [Offense: %s]' % (
+	expires = time.ctime( time.time() + duration * 60 ) if duration != 0 else 'never'
+	reason = '%s; %s; %s; %s; %s' % (
 		connection.forum_name if hasattr(connection, 'forum_name') else connection.name,
 		ntime, prettify_timespan(duration * 60), expires, reason
 	)
