@@ -24,7 +24,7 @@ def apply_script(protocol, connection, config):
     class SMGBlockConnection(connection):
         def on_block_destroy(self, x, y, z, value):
             can_destroy = connection.on_block_destroy(self, x, y, z, value)
-            if can_destroy != False and self.weapon == SMG_WEAPON self.tool == WEAPON_TOOL and (
+            if can_destroy != False and self.weapon == SMG_WEAPON and self.tool == WEAPON_TOOL and (
                     (x, y, z) not in self.protocol.smg_blocks or
                     self.protocol.smg_blocks[(x, y, z)] is None):
                 self.protocol.smg_blocks[(x, y, z)] = True
