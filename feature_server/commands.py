@@ -426,8 +426,8 @@ def toggle_build(connection, player = None):
         on_off))
 
 @admin
-@alias('tb')
-def tbp(connection, player):
+@alias('tbp')
+def tb(connection, player):
     toggle_build(connection, player)
     
 @name('togglekill')
@@ -450,8 +450,8 @@ def toggle_kill(connection, player = None):
         on_off))
 
 @admin
-@alias('tk')
-def tkp(connection, player):
+@alias('tkp')
+def tk(connection, player):
     toggle_kill(connection, player)
 
 @name('ttk')
@@ -538,7 +538,7 @@ def unstick(connection, player = None):
         player = get_player(connection.protocol, player)
     else:
         player = connection
-    player.send_chat('You were unstuck.' % (player.name))
+    player.send_chat('You were unstuck.')
     connection.protocol.irc_say('%s unstuck %s' % (connection.name, player.name))
     player.set_location_safe(player.get_location())
     return '%s was unstuck.' % player.name

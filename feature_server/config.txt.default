@@ -86,7 +86,7 @@
     "rights" : {
         "moderator" : [
             "hackinfo", "griefcheck",
-            "togglekill", "togglebuild", "tkp", "tbp",
+            "togglekill", "togglebuild", "tk", "tb",
             "kick", "ban", "banip", "hban", "tban", "dban",
             "unban", "undoban",
             "ip", "whowas", "from",
@@ -103,7 +103,7 @@
 
         "guard" : [
             "hackinfo", "griefcheck",
-            "tkp", "tbp",
+            "tk", "tb",
             "kick", "hban", "tban", "dban",
             "unstick", "tm", "unmute",
             "jail", "free", "jailed", "jailbreak",
