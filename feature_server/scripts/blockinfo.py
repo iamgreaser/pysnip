@@ -2,15 +2,22 @@
 A tool for identifying griefers.
 
 Maintainer: hompy
+Blocks per player added by +RainbowDash
 """
 
+from twisted.internet import reactor
 from twisted.internet.reactor import seconds
 from pyspades.collision import distance_3d_vector
 from pyspades.common import prettify_timespan
 from commands import add, admin, name, get_player, alias
 
 # "blockinfo" must be AFTER "votekick" in the config.txt script list
-GRIEFCHECK_ON_VOTEKICK = True
+AUTO_GC = True #Turns grief alert on or off
+AUTO_GC_TIME = 2 #Default time for griefcheck in grief alert
+AUTO_GC_BLOCKS = 40 #Number of blocks to begin warning at
+AUTO_GC_MAPBLOCKS = 40 #Number of mapblocks to begin warning at
+AUTO_GC_RATIO = .7 #ratio of teamblocks to enemy blocks to warn at
+GRIEFCHECK_ON_VOTEKICK = False
 IRC_ONLY = True
 
 @name('griefcheck')
@@ -44,9 +51,24 @@ def grief_check(connection, player, time = None):
                 infos]
         else:
             names = set([name for name, team in infos])
+        namecheck = [[name, team, 0] for name, team in infos]
         if len(names) > 0:
-            message += (' Some of them were placed by ' +
-                ('\x0f, ' if color else ', ').join(names))
+            for f in range(len(namecheck)):
+                for i in range(len(blocks_removed)):
+                    if blocks_removed[i][1] is not None:
+                        if namecheck[f][0] == blocks_removed[i][1][0] and namecheck[f][1] == blocks_removed[i][1][1] and blocks_removed[i][0] >= time:
+                            namecheck[f][2] += 1
+             
+            message += (' Some of them were placed by ')
+            for i in range(len(names)):
+                message += ('\x0f, ' if color else ', ') + names[i] + "(" + str(namecheck[i][2]) + ")"
+            userblocks = 0
+            for i in range(len(namecheck)):
+                userblocks = userblocks + namecheck[i][2]
+            if userblocks == len(blocks):
+                pass
+            else:
+                message += ('\x0f. ' if color else '. ') + str(len(blocks) - userblocks) + " were map blocks"
             message += '\x0f.' if color else '.'
         else:
             message += ' All of them were map blocks.'
@@ -89,12 +111,68 @@ def grief_check(connection, player, time = None):
 
 add(grief_check)
 
+def griefalert(self):
+    player = self
+    time = seconds() - AUTO_GC_TIME * 60
+    blocks_removed = player.blocks_removed or []
+    blocks = [b[1] for b in blocks_removed if b[0] >= time]
+    player_name = player.name
+    infos = set(blocks)
+    infos.discard(None)
+    namecheck = [[name, team, 0] for name, team in infos]
+    if len(namecheck) > 0:
+        for f in range(len(namecheck)):
+            for i in range(len(blocks_removed)):
+                if blocks_removed[i][1] is not None:
+                    if namecheck[f][0] == blocks_removed[i][1][0] and namecheck[f][1] == blocks_removed[i][1][1] and blocks_removed[i][0] >= time:
+                        namecheck[f][2] += 1
+                    
+    teamblocks = 0
+    enemyblocks = 0
+    mapblocks = 0
+    for i in range(len(namecheck)):
+        if namecheck[i][1] == player.team.id:
+            teamblocks += namecheck[i][2]
+        else:
+            enemyblocks += namecheck[i][2]
+    for i in range(len(blocks_removed)):
+        if blocks_removed[i][1] is None and blocks_removed[i][0] >= time:
+            if int(blocks_removed[i][2]) == 1 and int(player.team.id) == 1:
+                mapblocks += 1
+            elif int(blocks_removed[i][2]) == 0 and int(player.team.id) == 0:
+                mapblocks += 1
+           
+    if not self.griefcheck_delay and float(teamblocks)/float(len(blocks)) >= AUTO_GC_RATIO and len(blocks) >= AUTO_GC_BLOCKS:
+        message = "Potential griefer detected: " + player_name
+        message += " removed " + str(len(blocks)) + " blocks in the past " + str(AUTO_GC_TIME) + " minutes, "
+        message += " " + str(int(float(teamblocks)/float(len(blocks))* 100)) + "% from their own team"
+        irc_relay = self.protocol.irc_relay 
+	if irc_relay.factory.bot and irc_relay.factory.bot.colors:
+            message = '\x0304* ' + message + '\x0f'
+        self.griefcheck_delay = True
+        reactor.callLater(10,griefcheckdelay,self)
+	irc_relay.send(message)
+    elif not self.griefcheck_delay and mapblocks >= AUTO_GC_MAPBLOCKS:
+        message = "Potential griefer detected: " + player_name
+        message += " removed " + str(mapblocks) + " map blocks on their side in the past " + str(AUTO_GC_TIME) + " minutes"
+        irc_relay = self.protocol.irc_relay 
+        if irc_relay.factory.bot and irc_relay.factory.bot.colors:
+            message = '\x0304* ' + message + '\x0f'
+        self.griefcheck_delay = True
+        reactor.callLater(10,griefcheckdelay,self)
+	irc_relay.send(message)
+
+    
+def griefcheckdelay(self):
+    self.griefcheck_delay = False
+    
 def apply_script(protocol, connection, config):
     has_votekick = 'votekick' in config.get('scripts', [])
     
     class BlockInfoConnection(connection):
         blocks_removed = None
         teamkill_times = None
+        griefcheck_delay = False
         
         def on_reset(self):
             self.blocks_removed = None
@@ -121,8 +199,15 @@ def apply_script(protocol, connection, config):
             if self.blocks_removed is None:
                 self.blocks_removed = []
             pos = (x, y, z)
-            info = (seconds(), self.protocol.block_info.pop(pos, None))
+            if pos[0] >= 256:
+                side = 1
+            else:
+                side = 0                
+            info = (seconds(), self.protocol.block_info.pop(pos, None),side)
             self.blocks_removed.append(info)
+            if AUTO_GC:
+                griefalert(self)
+                
             connection.on_block_removed(self, x, y, z)
         
         def on_kill(self, killer, type, grenade):
@@ -143,8 +228,10 @@ def apply_script(protocol, connection, config):
             result = protocol.on_votekick_start(self, instigator, victim, reason)
             if result is None and GRIEFCHECK_ON_VOTEKICK:
                 message = grief_check(instigator, victim.name)
+                message2 = grief_check(instigator, victim.name,5)
                 if IRC_ONLY:
                     self.irc_say('* ' + message)
+                    self.irc_say('* ' + message2)
                 else:
                     self.send_chat(message, irc = True)
             return result
