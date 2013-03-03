@@ -301,10 +301,10 @@ def apply_script(protocol, connection, config):
 				reactor.callLater(0.0, slurpunish, self)
 			return connection.on_chat(self, value, global_message)
 		def on_team_join(self, team):
-			 reactor.callLater(0.5,checkname,self)
-			 if self.address[0] in self.protocol.muted:
+			reactor.callLater(0.5,checkname,self)
+			if self.address[0] in self.protocol.muted:
 				 self.mute = True
-			 return connection.on_team_join(self, team)
+			return connection.on_team_join(self, team)
 		def on_weapon_set(self, wpnid):
 			if self.protocol.wpn_banned[wpnid]:
 				self.send_chat("%s is disabled" % WPN_NAME_LIST[wpnid])
@@ -330,14 +330,12 @@ def apply_script(protocol, connection, config):
 			if result is None and GRIEFCHECK_ON_VOTEKICK and grief_match(reason):
 				message = grief_check(instigator, victim.name)
 				message2 = grief_check(instigator, victim.name,5)
-				#irc_relay = instigator.protocol.irc_relay 
-				#if irc_relay.factory.bot and irc_relay.factory.bot.colors:
-				#	message = '\x02* ' + message + '\x02'
-				#	message2 = '\x02* ' + message2 + '\x02'
-				#irc_relay.send(message)
-				#irc_relay.send(message2)
-				#self.irc_say(grief_check(instigator, victim.name))
-				#self.irc_say(grief_check(instigator, victim.name,5))
+				irc_relay = instigator.protocol.irc_relay 
+				if irc_relay.factory.bot and irc_relay.factory.bot.colors:
+					message = '\x0304* ' + message + '\x0f'
+					message2 = '\x0304* ' + message2 + '\x0f'
+				irc_relay.send(message)
+				irc_relay.send(message2)
 			if result is None and HACKCHECK_ON_VOTEKICK and hack_match(reason):
 				message = hackinfo(instigator, victim.name)
 				irc_relay = instigator.protocol.irc_relay 
