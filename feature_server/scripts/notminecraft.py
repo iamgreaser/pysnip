@@ -6,7 +6,7 @@ Author: GreaseMonkey (as usual, also stitched together from other sources)
 
 from pyspades.constants import *
 
-NOTMINECRAFT_KILLS_FOR_BUILD = 5
+NOTMINECRAFT_KILLS_FOR_BUILD = 0
 NOTMINECRAFT_KILLS_FOR_BREAK = 5
 
 def apply_script(protocol, connection, config):
