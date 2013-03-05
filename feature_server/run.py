@@ -589,7 +589,7 @@ class FeatureProtocol(ServerProtocol):
             self.game_mode = CTF_MODE
         elif game_mode == 'tc':
             self.game_mode = TC_MODE
-        elif self.game_mode is None:
+        elif game_mode is None:
             raise NotImplementedError('invalid game mode: %s' % game_mode)
         self.game_mode_name = game_mode
         team1 = config.get('team1', {})
