@@ -67,8 +67,6 @@ def to_coordinates(x, y):
     return '%s%s' % (chr(ord('a') + int(x) / 64).upper(), (int(y) / 64) + 1)
 
 def prettify_timespan(total, get_seconds = False):
-    if total < 1:
-        return 'forever'
     total = int(total)
     days = total / (1440 * 60)
     total -= days * 1440 * 60

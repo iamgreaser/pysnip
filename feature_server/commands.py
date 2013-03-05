@@ -156,7 +156,7 @@ def ban(connection, value, *arg):
     player = get_player(connection.protocol, value)
     reason = '%s; %s; %s; %s; %s; %s' % (
         player.name, connection.forum_name if hasattr(connection, 'forum_name') else connection.name,
-        ntime, prettify_timespan(duration * 60), expires, reason
+        ntime, prettify_timespan(duration * 60) if duration > 0 else 'never', expires, reason
     )
     player.ban(reason, duration)
 
@@ -183,7 +183,7 @@ def banip(connection, ip, *arg):
     expires = time.ctime( time.time() + duration * 60 ) if duration != 0 else 'never'
     reason = '%s; %s; %s; %s; %s' % (
         connection.forum_name if hasattr(connection, 'forum_name') else connection.name,
-        ntime, prettify_timespan(duration * 60), expires, reason
+        ntime, prettify_timespan(duration * 60) if duration > 0 else 'forever', expires, reason
     )
 
     try:
