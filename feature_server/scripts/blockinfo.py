@@ -148,7 +148,7 @@ def griefalert(self):
         message += " " + str(int(float(teamblocks)/float(len(blocks))* 100)) + "% from their own team"
         irc_relay = self.protocol.irc_relay 
 	if irc_relay.factory.bot and irc_relay.factory.bot.colors:
-            message = '\x0304* ' + message + '\x0f'
+            message = '\x0303* ' + message + '\x0f'
         self.griefcheck_delay = True
         reactor.callLater(10,griefcheckdelay,self)
 	irc_relay.send(message)
@@ -157,7 +157,7 @@ def griefalert(self):
         message += " removed " + str(mapblocks) + " map blocks on their side in the past " + str(AUTO_GC_TIME) + " minutes"
         irc_relay = self.protocol.irc_relay 
         if irc_relay.factory.bot and irc_relay.factory.bot.colors:
-            message = '\x0304* ' + message + '\x0f'
+            message = '\x0303* ' + message + '\x0f'
         self.griefcheck_delay = True
         reactor.callLater(10,griefcheckdelay,self)
 	irc_relay.send(message)

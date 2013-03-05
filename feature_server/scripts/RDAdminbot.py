@@ -332,8 +332,8 @@ def apply_script(protocol, connection, config):
 				message2 = grief_check(instigator, victim.name,5)
 				irc_relay = instigator.protocol.irc_relay 
 				if irc_relay.factory.bot and irc_relay.factory.bot.colors:
-					message = '\x0304* ' + message + '\x0f'
-					message2 = '\x0304* ' + message2 + '\x0f'
+					message = '\x0303* ' + message + '\x0f'
+					message2 = '\x0303* ' + message2 + '\x0f'
 				irc_relay.send(message)
 				irc_relay.send(message2)
 			if result is None and HACKCHECK_ON_VOTEKICK and hack_match(reason):
