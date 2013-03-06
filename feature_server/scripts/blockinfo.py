@@ -112,6 +112,9 @@ def grief_check(connection, player, time = None):
 add(grief_check)
 
 def griefalert(self):
+    for i in ['guard','moderator','admin']:
+        if i in self.user_types:
+            return
     player = self
     time = seconds() - AUTO_GC_TIME * 60
     blocks_removed = player.blocks_removed or []
