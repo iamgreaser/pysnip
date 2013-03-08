@@ -312,6 +312,8 @@ def _login(connection, username, password):
 def login(connection, username, password):
     from threading import Thread
     t = Thread(target=_login, args=(connection, username, password))
+    t.daemon = True
+    t.start()
     
 # _login(connection, username, password)
 
