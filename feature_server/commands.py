@@ -287,28 +287,31 @@ def help(connection):
         names = [x for x in connection.rights]
         return 'Available commands: %s' % (', '.join(names))
 
-def login(connection, username, password):
+def _login(connection, username, password):
     import urllib
     import urllib2
     if connection not in connection.protocol.players:
         raise KeyError()
-    q = { 'username' : username, 'password' : password }
-    user_type = urllib2.urlopen('http://forum.minit.nu/login_check.php?' + urllib.urlencode(q)).read()
+    q = urllib.urlencode({ 'username': username, 'password': password })
+    user_type = urllib2.urlopen('http://forum.minit.nu/login_check.php?' + q).read()
     if user_type == 'none':
         if connection.login_retries is None:
             connection.login_retries = connection.protocol.login_retries - 1
         else:
-            connection.login_retries -= 1
+            conneciton.login_retries -= 1
         if not connection.login_retries:
             connection.kick('Ran out of login attempts')
             return False
-        connection.send_chat('Invalid password - you have %s tries left' % (
-            connection.login_retries))
-        return False
     if user_type in connection.user_types:
         return "You're already logged in as %s" % user_type
     connection.on_user_login(user_type, True, username)
     return False
+
+def login(connection, username, password):
+    from threading import Thread
+    t = Thread(target=_login, args=(connection, username, password))
+    
+# _login(connection, username, password)
 
 def pm(connection, value, *arg):
     player = get_player(connection.protocol, value)
