@@ -288,6 +288,7 @@ def help(connection):
         return 'Available commands: %s' % (', '.join(names))
 
 def _login(connection, username, password):
+	print 'LOGIN CALLED FOREVER HI'
     import urllib
     import urllib2
     if connection not in connection.protocol.players:
@@ -303,7 +304,8 @@ def _login(connection, username, password):
             connection.kick('Ran out of login attempts')
             return False
     if user_type in connection.user_types:
-        return "You're already logged in as %s" % user_type
+        connection.send_chat("You're already logged in as %s" % user_type)
+		return
     connection.on_user_login(user_type, True, username)
     return False
 
