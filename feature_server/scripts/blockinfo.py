@@ -13,10 +13,12 @@ from commands import add, admin, name, get_player, alias
 
 # "blockinfo" must be AFTER "votekick" in the config.txt script list
 AUTO_GC = True #Turns grief alert on or off
+AUTO_MAPBLOCKS_DETECT = False #Turns mapblock detect on or off.
 AUTO_GC_TIME = 2 #Default time for griefcheck in grief alert
 AUTO_GC_BLOCKS = 40 #Number of blocks to begin warning at
-AUTO_GC_MAPBLOCKS = 40 #Number of mapblocks to begin warning at
+AUTO_GC_MAPBLOCKS = 100 #Number of mapblocks to begin warning at
 AUTO_GC_RATIO = .7 #ratio of teamblocks to enemy blocks to warn at
+AUTO_GC_GRIEFDELAY = 20 #time in seconds between alerts
 GRIEFCHECK_ON_VOTEKICK = False
 IRC_ONLY = True
 
@@ -50,7 +52,7 @@ def grief_check(connection, player, time = None):
             names = [('\x0303' if team else '\x0302') + name for name, team in
                 infos]
         else:
-            names = set([name for name, team in infos])
+            names = [name for name, team in infos]
         namecheck = [[name, team, 0] for name, team in infos]
         if len(names) > 0:
             for f in range(len(namecheck)):
@@ -144,6 +146,7 @@ def griefalert(self):
                 mapblocks += 1
             elif int(blocks_removed[i][2]) == 0 and int(player.team.id) == 0:
                 mapblocks += 1
+    enemyblocks -= mapblocks
            
     if not self.griefcheck_delay and float(teamblocks)/float(len(blocks)) >= AUTO_GC_RATIO and len(blocks) >= AUTO_GC_BLOCKS:
         message = "Potential griefer detected: " + player_name
@@ -155,14 +158,14 @@ def griefalert(self):
         self.griefcheck_delay = True
         reactor.callLater(10,griefcheckdelay,self)
 	irc_relay.send(message)
-    elif not self.griefcheck_delay and mapblocks >= AUTO_GC_MAPBLOCKS:
+    elif not self.griefcheck_delay and mapblocks >= AUTO_GC_MAPBLOCKS and AUTO_MAPBLOCKS_DETECT:
         message = "Potential griefer detected: " + player_name
         message += " removed " + str(mapblocks) + " map blocks on their side in the past " + str(AUTO_GC_TIME) + " minutes"
         irc_relay = self.protocol.irc_relay 
         if irc_relay.factory.bot and irc_relay.factory.bot.colors:
             message = '\x0303* ' + message + '\x0f'
         self.griefcheck_delay = True
-        reactor.callLater(10,griefcheckdelay,self)
+        reactor.callLater(AUTO_GC_GRIEFDELAY,griefcheckdelay,self)
 	irc_relay.send(message)
 
     
