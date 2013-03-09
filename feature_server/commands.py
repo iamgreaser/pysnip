@@ -298,10 +298,9 @@ def _login(connection, username, password):
         if connection.login_retries is None:
             connection.login_retries = connection.protocol.login_retries - 1
         else:
-            conneciton.login_retries -= 1
+            connection.login_retries -= 1
         if not connection.login_retries:
             connection.kick('Ran out of login attempts')
-            return False
         return False
     if user_type in connection.user_types:
         connection.send_chat("You're already logged in as %s" % user_type)
