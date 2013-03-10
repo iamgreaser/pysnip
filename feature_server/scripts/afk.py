@@ -45,16 +45,17 @@ def kick_afk(connection, minutes, amount = None):
     to_kick.sort(key = lambda conn: conn.name is None)
     amount = amount or len(to_kick)
     kicks = 0
-    for conn in to_kick[:amount]:
-        if conn.name:
-            conn.afk_kick()
-            kicks += 1
-        else:
-            conn.disconnect()
+    if to_kick[:amount] is not None:
+        for conn in to_kick[:amount]:
+            if conn.name:
+                conn.afk_kick()
+                kicks += 1
+            else:
+                conn.disconnect()
     message = S_AFK_KICKED.format(num_players = kicks,
         num_connections = amount - kicks, time = minutes_s)
     protocol.irc_say('* ' + message)
-    if connection in protocol.players:
+    if connection in protocol.players.itervalues():
         return message
 
 add(afk)
