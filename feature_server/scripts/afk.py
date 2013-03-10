@@ -33,7 +33,7 @@ def kick_afk(connection, minutes, amount = None):
     seconds = minutes * 60.0
     minutes_s = prettify_timespan(seconds)
     lower_bound = reactor.seconds() - seconds
-    for conn in protocol.connections.values():
+    for conn in protocol.connections.itervalues():
         for t in ('admin', 'moderator', 'guard', 'trusted'):
             if t in conn.user_types:
                 no_kick = True
