@@ -381,10 +381,12 @@ def switch(connection, player = None, team = None):
         player = connection
     else:
         raise ValueError()
-    if player.team.spectator:
+    if player.team.spectator and team is None:
         player.send_chat("The switch command can't be used on a spectating player.")
         return
-    if team is None:
+    if team is None and player.team.spectator:
+        new_team = get_team(connection, team)
+    elif team is None:
         new_team = player.team.other
     else:
         new_team = get_team(connection, team)
