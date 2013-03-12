@@ -18,13 +18,11 @@ def apply_script(protocol, connection, config):
             p = True
             for i in ['admin', 'moderator', 'guard', 'trusted']:
                 if i in self.user_types:
-                    p = False
+                    return False
             if self.god:
-                p = False
-
-            if not p:
-                if self.notminecraft_kills < k:
-                    return True
+                return False
+            if self.notminecraft_kills < k:
+                return True
 
             return False
         
