@@ -5,6 +5,7 @@ def getPage(url, bindAddress = None, *arg, **kw):
     # reimplemented here to insert bindAddress
     scheme, host, port, path = _parse(url)
     factory = HTTPClientFactory(url, *arg, **kw)
+    factory.noisy = False
     if scheme == 'https':
         from twisted.internet import ssl
         context = ssl.ClientContextFactory()
