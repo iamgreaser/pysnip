@@ -44,10 +44,6 @@ from pyspades.collision import vector_collision, distance_3d, collision_3d
 from pyspades.constants import *
 from commands import admin, add, name, get_team, login
 
-
-CARPET_COLOR = (255, 0, 0)
-
-
 try:
     from preservecolor import destroy_block
 except ImportError:
@@ -68,50 +64,31 @@ def point_distance2(c1, c2):
         p2 = c2.world_object.position
         return (p1.x - p2.x)**2 + (p1.y - p2.y)**2 + (p1.z - p2.z)**2
     
+@name('aistate')
+def ai_state(connection):
+    return 'enabled' if connection.protocol.ai_enabled else 'disabled'
 LOGIC_FPS = 4.0
-@name('query')
-def query(connection):
-    print "PositionData %d " % PositionData.id
-    print "OrientationData %d " % OrientationData.id
-    print "WorldUpdate %d " % WorldUpdate.id
-    print "InputData %d " % InputData.id
-    print "WeaponInput %d " % WeaponInput.id
-    print "HitPacket %d " % HitPacket.id
-    print "SetHP %d " % SetHP.id
-    print "GrenadePacket %d " % GrenadePacket.id
-    print "SetTool %d " % SetTool.id
-    print "SetColor %d " % SetColor.id
-    print "ExistingPlayer %d " % ExistingPlayer.id
-    print "ShortPlayerData %d " % ShortPlayerData.id
-    print "MoveObject %d " % MoveObject.id
-    print "CreatePlayer %d " % CreatePlayer.id
-    print "BlockAction %d " % BlockAction.id
-    print "BlockLine %d " % BlockLine.id
-    print "CTFState %d " % CTFState.id
-    print "TCState %d " % TCState.id
-    print "StateData %d " % StateData.id
-    print "KillAction %d " % KillAction.id
-    print "ChatMessage %d " % ChatMessage.id
-    print "MapStart %d " % MapStart.id
-    print "MapChunk %d " % MapChunk.id
-    print "PlayerLeft %d " % PlayerLeft.id
-    print "TerritoryCapture %d " % TerritoryCapture.id
-    print "ProgressBar %d " % ProgressBar.id
-    print "IntelCapture %d " % IntelCapture.id
-    print "IntelPickup %d " % IntelPickup.id
-    print "IntelDrop %d " % IntelDrop.id
-    print "Restock %d " % Restock.id
-    print "FogColor %d " % FogColor.id
-    print "WeaponReload %d " % WeaponReload.id
-    print "ChangeTeam %d " % ChangeTeam.id
-    print "ChangeWeapon %d " % ChangeWeapon.id
-    dir( ChangeWeapon )
+@name('botstate')
+def bot_state(connection, minbots = None, maxbots = None):
     
-@name('dadbot')
+    if minbots is not None:
+        if connection.min_bots < maxbots and minbots > 0:
+            connection.min_bots = minbots
+        else:
+            return "min bots (%s) too low or greater then maxbots" % minbots
+        
+    if maxbots is not None:
+        if maxbots <= connection.protocol.max_players and maxbots > connection.min_bots:
+            connection.max_bots = maxbots
+        else:
+            return "max bots (%s) too high. Can't be less than minbots or higher than max players" % maxbots
+
+    return "Bot stats :  %s bots %s  " % ( len(connection.protocol.bots) , ai_state(connection) )
+
+
+@name('addbot')
 def add_bot(connection, amount = None, team = None):
 
-
-    #print " %d " % .id
     protocol = connection.protocol
     if team:
         bot_team = get_team(connection, team)
@@ -128,6 +105,7 @@ def add_bot(connection, amount = None, team = None):
     return "Added %s bot(s)" % amount
 
 
+
 @name('toggleai')
 def toggle_ai(connection):
     protocol = connection.protocol
@@ -135,13 +113,15 @@ def toggle_ai(connection):
     if not protocol.ai_enabled:
         for bot in protocol.bots:
             bot.flush_input()
-    state = 'enabled' if protocol.ai_enabled else 'disabled'
-    protocol.send_chat('AI %s!' % state)
+    state = ai_state
+    protocol.send_chat('AI %s!' % state )
     protocol.irc_say('* %s %s AI' % (connection.name, state))
-
+    
+add(bot_state)
 add(add_bot)
+add(ai_state)
 add(toggle_ai)
-add(query)
+
 class LocalPeer:
     #address = Address(None, 0)
     address = Address('255.255.255.255', 0)
@@ -164,6 +144,9 @@ def apply_script(protocol, connection, config):
             bot = self.connection_class(self, None)
             bot.join_game(team)
             self.bots.append(bot)
+            #bots login, so they can issue /commands
+            # this will allow votes in votekicks etc
+            # set up config.txt with a password for bots, and give them rights
             login( bot , 'ROBOTTOCH4N' )
             return bot
         
@@ -206,15 +189,22 @@ def apply_script(protocol, connection, config):
         acquire_targets = False
         grenade_call = None
         suicide_call = None
-        allow_conn_kick = False # Will get kicked if a player connects or not
+        
         reaim_call = False
         terminator = False # Don't get him angry
         ticks_fire = None
         fire_distance = None
         fire_tick_period = None
+        # set these to allow min and max amount of bot players
+        max_bots = 16
+        min_bots = 0
+        # allow bots to be kicked in favour of humans trying to join the server
+        # /kick by a mod or admin will still work
+        allow_kick = True 
         
         _turn_speed = None
         _turn_vector = None
+        
         def _get_turn_speed(self):
             return self._turn_speed
         def _set_turn_speed(self, value):
@@ -242,15 +232,10 @@ def apply_script(protocol, connection, config):
             self.input = set()
         
         def join_game(self, team):
-            if team is self.protocol.green_team:
-                self.name = 'Zombot%s' % str(self.player_id)
-                self.fire_distance = 2.5
-                self.fire_tick_period = 15
-            else:
-                self.name = 'T-100%s' % str(self.player_id)
-                self.fire_distance = 80
-                self.terminator = True
-                self.fire_tick_period = 25
+            self.name = 'AOSbot %s' % str(self.player_id)
+            self.fire_distance = 80
+            self.terminator = True
+            self.fire_tick_period = 15
             self.team = team
             
             self.set_weapon( SMG_WEAPON, True)
@@ -289,9 +274,6 @@ def apply_script(protocol, connection, config):
                 self.acquire_targets = False
                 dist = point_distance2(self, self.aim_at )
 
-
-
-
                 if self.target_orientation.z < -0.25:
 
                     cont = block_line
@@ -304,25 +286,13 @@ def apply_script(protocol, connection, config):
                     cont.z2 = (pos.z+2)
 
                     self.input.add("secondary_fire")
-                    
-                    #self.protocol.send_contained( cont, True ) 
-                    #build_block(self.protocol, self, int(pos.x), int(pos.y), int(pos.z)+2, CARPET_COLOR)    
 
-                    
             if random.random() > 0.95 or self.aim_at is None:
                 if self.team.other.flag.player is not self:
                     self.acquire_targets = True
                 
             if self.aim_at and not obj.can_see(*self.aim_at.world_object.position.get()) and not self.terminator:
                 self.aim_at = None
-                #self.acquire_targets = True
-                #self.input.add("jump")
-                #if self.target_orientation.z >0.9:
-                #    build_block(self.protocol, self, int(pos.x), int(pos.y), int(pos.z)+2, CARPET_COLOR)    
-
-                
-                #build_block(self.protocol, self, int(pos.x+1), int(pos.y), int(pos.z)+2, CARPET_COLOR)
-
                 
             # replicate player functionality
             if self.protocol.game_mode == CTF_MODE:
@@ -378,10 +348,8 @@ def apply_script(protocol, connection, config):
                 x, y, z = location
                 map = player.protocol.map
                             
-                #if  player.sculpt_primary and not player.sculpt_secondary:
-                
+ 
                 if not collision_3d(px, py, pz, x, y, z, 3):
-                    # sculpting too far
                     return
                 self.input.add("primary_fire")
                 if player.on_block_destroy(x, y, z, DESTROY_BLOCK) == False:
@@ -389,8 +357,6 @@ def apply_script(protocol, connection, config):
                 if z > 62 or not destroy_block(player.protocol, x, y, z):
                     return
                 if map.get_solid(x, y, z):
-                    # sculpt allows destroying base blocks, but the API doesn't
-                    # like this. work around it and force destruction
                     map.remove_point(x, y, z)
                     map.check_node(x, y, z, True)
                 player.on_block_removed(x, y, z)
@@ -399,6 +365,10 @@ def apply_script(protocol, connection, config):
             obj = self.world_object
             pos = obj.position
             ori = obj.orientation
+            if not self.hp:
+                self.flush_input()
+                self.input.clear()
+                return
             
             if self.aim_at and self.aim_at.world_object:
                 aim_at_pos = self.aim_at.world_object.position
@@ -420,21 +390,12 @@ def apply_script(protocol, connection, config):
                     if distance_to_aim < 20.0:
                         self.input.add("down")
                         
-                if self.team is self.protocol.green_team:
-                    if distance_to_aim < 32.0:
-                        self.input.add("up")
-                        self.input.add("sprint")
-                    if distance_to_aim < 5.0:
-                        self.input.add("primary fire")
-                        self.input.add("left")
-                        self.input.discard("sprint")
                 # creeper behavior
                 if  self.aim_at.team.id is not self.team.id and self.terminator:
-                    if distance_to_aim < 16.0 and distance_to_aim > 10.0 and self.grenade_call is None and self.grenades > 2:
-                        if random.random() >=0.9:
-
+                    if distance_to_aim < 36.0 and distance_to_aim > 24.0 and self.grenade_call is None and self.grenades > 2:
+                        if random.random() >=0.9995:
                             self.set_tool( GRENADE_TOOL )
-                            self.grenade_call = callLater(0.75 , self.throw_grenade,
+                            self.grenade_call = callLater(2.4 , self.throw_grenade,
                                 1.4)
 
             # orientate towards target
@@ -482,8 +443,9 @@ def apply_script(protocol, connection, config):
                     else:
                         self.ticks_fire +=1
                         
-            #if self.grenade_call or self.suicide_call:
-            #    self.input.add('primary_fire')
+            if self.grenade_call or self.suicide_call:
+                self.input.clear()
+                self.input.add('primary_fire')
  
             obj.set_orientation(*ori.get())
             self.flush_input()
@@ -581,13 +543,15 @@ def apply_script(protocol, connection, config):
             
             if not self.hp or not self.grenades:
                 return
+            
             self.grenades -= 1
             if self.on_grenade(time_left) == False:
                 return
+            self.input.add("jump")
             obj = self.world_object
             orient = obj.orientation
             # aim up a little
-            orient.z-=.59
+            orient.z-=.29
             grenade = self.protocol.world.create_object(Grenade, time_left,
                 obj.position, None, orient, self.grenade_exploded)
             grenade.team = self.team
@@ -599,10 +563,7 @@ def apply_script(protocol, connection, config):
             grenade_packet.position = grenade.position.get()
             grenade_packet.velocity = grenade.velocity.get()
             self.protocol.send_contained(grenade_packet)
-            if self.team is self.protocol.green_team:
-                self.set_tool( SPADE_TOOL )
-            else:
-                self.set_tool( WEAPON_TOOL )
+            self.set_tool( WEAPON_TOOL )
                 
         def on_spawn(self, pos):
             
@@ -614,34 +575,10 @@ def apply_script(protocol, connection, config):
 
             self.acquire_targets = False
             self.aim_at = None
-            
-##            if self.team is self.protocol.green_team:
-##                self.set_tool(SPADE_TOOL)
-##                self.set_weapon( RIFLE_WEAPON )
-##            else:
-##                self.set_tool( WEAPON_TOOL )
-##                self.set_weapon( SHOTGUN_WEAPON )
-                
             self.input.add("jump")
             
             return connection.on_spawn(self, pos )
         
-
-
-        def don_hit(self, hit_amount, hit_player, type, grenade):
-            new_hit = connection.on_hit(self, hit_amount, hit_player, type, grenade)
-            if new_hit is not None:
-                return new_hit
-            
-            other_player_location = hit_player.world_object.position
-            other_player_location = (other_player_location.x, other_player_location.y, other_player_location.z)
-            player_location = self.world_object.position
-            player_location = (player_location.x, player_location.y, player_location.z)
-            dist = floor(distance_3d(player_location, other_player_location))
-
-            damagemulti = (sin(dist/80))+1
-            new_hit = hit_amount * damagemulti
-            return new_hit
         
         def on_kill(self, killer, type, grenade):
             if not self.local:
@@ -652,8 +589,7 @@ def apply_script(protocol, connection, config):
                 cont.chat_type = 0
                 
                 if self.terminator is True:
-                    cont.value = '/lightning'
-                    self.on_command(*parse_command(cont.value[1:]))
+                    self.on_command(*parse_command("lightning"))
 
                 cont.value = 'I will eat your Brain'
                 #self.protocol.send_contained( cont, False, sender = self )
@@ -673,16 +609,32 @@ def apply_script(protocol, connection, config):
             set_tool.player_id = self.player_id
             set_tool.value = self.tool
             self.protocol.send_contained(set_tool)
-            
+
+
         def on_connect(self):
-            if self.local:
-                return connection.on_connect(self)
-            max_players = min(32, self.protocol.max_players)
             protocol = self.protocol
+
+            if self.local:
+                if len(protocol.bots) > self.max_bots:
+                    return self.disconnect()
+                else:
+                    return connection.on_connect(self)
+            
+            max_players = min(32, protocol.max_players)
+            
+
+            
             if len(protocol.connections) + len(protocol.bots) > max_players:
-                if not self.allow_conn_kick:
-                    self.disconnect(ERROR_FULL)
-                protocol.bots[-1].disconnect()
+                if not self.allow_kick:
+                    return self.disconnect(ERROR_FULL)
+                elif len(protocol.bots) > self.min_bots:
+                    # let's try getting rid of a bot
+                    try:
+                        protocol.bots[-1].disconnect( ERROR_KICKED )
+                        return connection.on_connect(self)
+                    except IndexError:
+                        return self.disconnect(ERROR_FULL)
+                
 
             connection.on_connect(self)
         
@@ -690,6 +642,8 @@ def apply_script(protocol, connection, config):
             for bot in self.protocol.bots:
                 if bot.aim_at is self:
                     bot.aim_at = None
+                    bot.aquire_targets = True
+                    
             connection.on_disconnect(self)
         
 
@@ -708,7 +662,6 @@ def apply_script(protocol, connection, config):
             connection.send_map(self, data)
             
 
-            
         def timer_received(self, value):
             if self.local:
                 return
