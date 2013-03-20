@@ -476,6 +476,15 @@ def toggle_teamkill(connection):
     connection.protocol.irc_say('* %s toggled friendly fire %s' % (
         connection.name, on_off))
 
+@name('stk')
+@admin
+def set_teamkill(connection, value):
+    vt = { 'on': True, 'off': False, 'grief': 'on_grief' }
+    if value.lower() not in vt:
+        raise ValueError()
+    connection.protocol.friendly_fire = vt[value]
+    connection.protocol.irc_say('%s set friendly fire %s' % (connection.name, vt[value]))
+
 @admin
 def mute(connection, value):
     player = get_player(connection.protocol, value)
@@ -927,6 +936,7 @@ command_list = [
     undo_ban,
     whitelist_check,
     whitelist_reload,
+    set_teamkill,
     mute,
     unmute,
     deaf,
