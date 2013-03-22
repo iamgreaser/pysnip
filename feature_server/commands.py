@@ -184,6 +184,11 @@ def last_from_ip(ip):
 
 @admin
 def banip(connection, ip, *arg):
+    try:
+        network = get_network(ip)
+    except ValueError:
+        return 'Invalid IP address/network'
+    
     import time
     duration, reason = get_ban_arguments(connection, arg)
     ntime = time.ctime( time.time() )
@@ -193,9 +198,17 @@ def banip(connection, ip, *arg):
         ntime, prettify_timespan(duration * 60) if duration > 0 else 'forever', expires, reason
     )
 
-    plr = last_from_ip(ip)
-    if plr is not None:
-        reason += ' (last known username: %s)' % plr
+    names = set()
+    for connection in protocol.connections.itervalues():
+        if get_network(connection.address[0]) in network:
+            if connection.name:
+                names.add(connection.name)
+    for name, stored_ip in connection.protocol.player_memory:
+        if get_network(stored_ip) in network:
+            names.add(name)
+
+    if names:
+        reason += ' ( %s )' % ' '.join(names)
 
     try:
         connection.protocol.add_ban(ip, reason, duration)
