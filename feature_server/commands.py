@@ -175,6 +175,13 @@ def dban(connection, value, *arg):
     arg = (1440,) + arg
     ban(connection, value, *arg)
 
+def last_from_ip(ip):
+    for name, plr_ip in connection.protocol.player_memory:
+        if ip == plr_ip:
+            return name
+    return None
+
+
 @admin
 def banip(connection, ip, *arg):
     import time
@@ -185,6 +192,10 @@ def banip(connection, ip, *arg):
         connection.forum_name if hasattr(connection, 'forum_name') else connection.name,
         ntime, prettify_timespan(duration * 60) if duration > 0 else 'forever', expires, reason
     )
+
+    plr = last_from_ip(ip)
+    if plr is not None:
+        reason += ' (last known username: %s)' % plr
 
     try:
         connection.protocol.add_ban(ip, reason, duration)

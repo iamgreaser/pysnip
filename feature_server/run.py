@@ -577,7 +577,7 @@ class FeatureProtocol(ServerProtocol):
         except IOError:
             pass
         self.hard_bans = set() # possible DDoS'ers are added here
-        self.player_memory = deque(maxlen = 100)
+        self.player_memory = deque(maxlen = 10000)
         self.config = config
         if len(self.name) > MAX_SERVER_NAME_SIZE:
             print '(server name too long; it will be truncated to "%s")' % (
@@ -659,12 +659,14 @@ class FeatureProtocol(ServerProtocol):
         self.start_time = reactor.seconds()
         self.end_calls = []
         self.console = create_console(self)
+
+        self.everyone_is_admin = True
         
-        for password in self.passwords.get('admin', []):
-            if password == 'replaceme':
-                print 'REMEMBER TO CHANGE THE DEFAULT ADMINISTRATOR PASSWORD!'
-            elif not password:
-                self.everyone_is_admin = True
+        #for password in self.passwords.get('admin', []):
+        #    if password == 'replaceme':
+        #        print 'REMEMBER TO CHANGE THE DEFAULT ADMINISTRATOR PASSWORD!'
+        #    elif not password:
+        #        self.everyone_is_admin = True
 
         for user_type, func_names in config.get('rights', {}).iteritems():
             for func_name in func_names:
