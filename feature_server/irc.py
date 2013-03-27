@@ -318,7 +318,6 @@ def score(connection):
         connection.protocol.blue_team.score,
         connection.protocol.green_team.score))
 
-@irc
 @commands.admin
 def alias(connection, value = None):
     aliases = connection.factory.aliases
@@ -334,7 +333,7 @@ def alias(connection, value = None):
         message = 'will alias %s to %s' % (unaliased_name, value)
     connection.me(message)
 
-@irc
+@commands.admin
 def unalias(connection):
     aliases = connection.factory.aliases
     unaliased_name = connection.unaliased_name
