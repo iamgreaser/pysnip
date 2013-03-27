@@ -199,6 +199,8 @@ def banip(connection, ip, *arg):
         ntime, prettify_timespan(duration * 60) if duration > 0 else 'forever', expires, reason
     )
 
+    protocol = connection.protocol
+
     names = set()
     for connection in protocol.connections.itervalues():
         if get_network(connection.address[0]) in network:
