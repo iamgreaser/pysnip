@@ -160,7 +160,7 @@ class IRCBot(irc.IRCClient):
             if msg.startswith(self.factory.commandprefix) and (
                 user in self.owners or user in self.admins or
                 user in self.moderators or user in self.guards or
-				user in self.voices):
+                user in self.voices):
                 self.unaliased_name = user
                 self.name = prefix + alias
                 input = msg[len(self.factory.commandprefix):]
@@ -319,6 +319,7 @@ def score(connection):
         connection.protocol.green_team.score))
 
 @irc
+@commands.admin
 def alias(connection, value = None):
     aliases = connection.factory.aliases
     unaliased_name = connection.unaliased_name
