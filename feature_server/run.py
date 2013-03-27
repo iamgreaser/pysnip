@@ -660,8 +660,6 @@ class FeatureProtocol(ServerProtocol):
         self.end_calls = []
         self.console = create_console(self)
 
-        self.everyone_is_admin = True
-        
         #for password in self.passwords.get('admin', []):
         #    if password == 'replaceme':
         #        print 'REMEMBER TO CHANGE THE DEFAULT ADMINISTRATOR PASSWORD!'
