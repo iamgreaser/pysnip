@@ -211,7 +211,7 @@ def banip(connection, ip, *arg):
             names.add(name)
 
     if names:
-        reason += ' ( %s )' % ' '.join(names)
+        reason += ' ( %s )' % ', '.join(names)
 
     try:
         connection.protocol.add_ban(ip, reason, duration)
@@ -221,10 +221,12 @@ def banip(connection, ip, *arg):
     duration = duration or None
 
     if duration is None:
-        return 'IP/network %s permabanned%s' % (ip, reason)
+        r = 'IP/network %s permabanned%s' % (ip, reason)
     else:
-        return 'IP/network %s banned for %s%s' % (ip,
+        r = 'IP/network %s banned for %s%s' % (ip,
             prettify_timespan(duration * 60), reason)
+    connection.protocol.irc_say(r)
+    return r
 
 @admin
 def unban(connection, ip):
