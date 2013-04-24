@@ -969,6 +969,7 @@ command_list = [
     fog,
     ban,
     banip,
+    names,
     unban,
     undo_ban,
     whitelist_check,
