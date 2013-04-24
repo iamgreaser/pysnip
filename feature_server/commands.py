@@ -229,6 +229,14 @@ def banip(connection, ip, *arg):
     return r
 
 @admin
+def names(connection, ip):
+    namelist = []
+    for name, stored_ip in connection.protocol.player_memory:
+        if get_network(stored_ip) in network:
+            namelist.add(name)
+    return 'Names in range ' + ip + ' used in the last 10000 connections:' + ', '.join(namelist)
+
+@admin
 def unban(connection, ip):
     try:
         connection.protocol.remove_ban(ip)
