@@ -152,6 +152,7 @@
         "blockinfo",
         "checkban",
         "hacktools",
+        "htmlhelper",
         "map_extensions",
         "medkit",
         "paint",
