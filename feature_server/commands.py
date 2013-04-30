@@ -230,6 +230,11 @@ def banip(connection, ip, *arg):
 
 @admin
 def names(connection, ip):
+    try:
+        network = get_network(ip)
+    except ValueError:
+        return 'Invalid IP address/network'
+
     namelist = []
     for name, stored_ip in connection.protocol.player_memory:
         if get_network(stored_ip) in network:
