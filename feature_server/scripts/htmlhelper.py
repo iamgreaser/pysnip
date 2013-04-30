@@ -25,13 +25,13 @@ def apply_script(protocol, connection, config):
                 return 'None'
 
         def html_get_afk(ignore, player):
-            return prettify_timespan(reactor.seconds() - player.last_activity, True)
+            return prettify_timespan(reactor.reactor.seconds() - player.last_activity, True)
 
         def html_grief_check(ignore, player, time):
             minutes = float(time or 2)
             if minutes < 0.0:
                 raise ValueError()
-            time = seconds() - minutes * 60.0
+            time = reactor.seconds() - minutes * 60.0
             blocks_removed = player.blocks_removed or []
             blocks = [b[1] for b in blocks_removed if b[0] >= time]
             player_name = player.name
@@ -71,7 +71,7 @@ def apply_script(protocol, connection, config):
                 else:
                     message += ' All of them were map blocks.'
                 last = blocks_removed[-1]
-                time_s = prettify_timespan(seconds() - last[0], get_seconds = True)
+                time_s = prettify_timespan(reactor.seconds() - last[0], get_seconds = True)
                 message += ' Last one was destroyed %s ago' % time_s
                 whom = last[1]
                 if whom is None and len(names) > 0:
@@ -83,7 +83,7 @@ def apply_script(protocol, connection, config):
                 message += '.'
             switch_sentence = False
             if player.last_switch is not None and player.last_switch >= time:
-                time_s = prettify_timespan(seconds() - player.last_switch,
+                time_s = prettify_timespan(reactor.seconds() - player.last_switch,
                     get_seconds = True)
                 message += ' %s joined %s team %s ago' % (player_name,
                     player.team.name, time_s)
