@@ -28,7 +28,6 @@ def apply_script(protocol, connection, config):
             return prettify_timespan(reactor.seconds() - player.last_activity, True)
 
         def html_grief_check(ignore, player, time):
-            protocol = connection.protocol
             minutes = float(time or 2)
             if minutes < 0.0:
                 raise ValueError()
