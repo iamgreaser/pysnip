@@ -25,7 +25,7 @@ def apply_script(protocol, connection, config):
                 return 'None'
 
         def html_get_afk(ignore, player):
-            return prettify_timespan(reactor.reactor.seconds() - player.last_activity, True)
+            return prettify_timespan(reactor.seconds() - player.last_activity, True)
 
         def html_grief_check(ignore, player, time):
             minutes = float(time or 2)
