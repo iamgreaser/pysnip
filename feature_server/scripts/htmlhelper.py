@@ -47,7 +47,7 @@ def apply_script(protocol, connection, config):
             if len(blocks):
                 infos = set(blocks)
                 infos.discard(None)
-                names = ['<font color="' + ('#007700' if team else '#000077') + '">'+ name for name, team in
+                names = ['<font color="' + ('#007700' if team else '#000077') + '">'+ name + '</font>' for name, team in
                     infos]
                 namecheck = [[name, team, 0] for name, team in infos]
                 if len(names) > 0:
