@@ -276,6 +276,11 @@ class ServerConnection(BaseConnection):
                         return
                     if returned is not None:
                         x, y, z = returned
+                    # blop
+                    if abs(x**2 + y**2 + z**2 - 1.0) > 0.005 and self.team != self.protocol.spectator_team and (self.user_types is None or 'admin' not in self.user_types):
+                        self.on_hack_attempt(
+                            'Ghetto hack detected %s' % self.user_types)
+                        return
                     world_object.set_orientation(x, y, z)
                 elif contained.id == loaders.PositionData.id:
                     current_time = reactor.seconds()
