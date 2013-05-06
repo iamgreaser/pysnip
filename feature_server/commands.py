@@ -238,7 +238,7 @@ def names(connection, ip):
     namelist = []
     for name, stored_ip in connection.protocol.player_memory:
         if get_network(stored_ip) in network:
-            namelist.add(name)
+            namelist.append(name)
     return 'Names in range ' + ip + ' used in the last 10000 connections:' + ', '.join(namelist)
 
 @admin
