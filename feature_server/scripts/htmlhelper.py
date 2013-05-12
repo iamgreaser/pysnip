@@ -28,7 +28,6 @@ def apply_script(protocol, connection, config):
             return prettify_timespan(reactor.seconds() - player.last_activity, True)
 
         def html_grief_check(ignore, player, time):
-            color = False
             minutes = float(time or 2)
             if minutes < 0.0:
                 raise ValueError()
@@ -36,9 +35,8 @@ def apply_script(protocol, connection, config):
             blocks_removed = player.blocks_removed or []
             blocks = [b[1] for b in blocks_removed if b[0] >= time]
             player_name = player.name
-            if color:
-                player_name = (('\x0303' if player.team.id else '\x0302') +
-                    player_name + '\x0f')
+            player_name = ('<font color="' + ('#007700' if player.team.id else '#000077') +
+                '">' + player_name + '</font>')
             message = '%s removed %s block%s in the last ' % (player_name,
                 len(blocks) or 'no', '' if len(blocks) == 1 else 's')
             if minutes == 1.0:
@@ -49,15 +47,27 @@ def apply_script(protocol, connection, config):
             if len(blocks):
                 infos = set(blocks)
                 infos.discard(None)
-                if color:
-                    names = [('\x0303' if team else '\x0302') + name for name, team in
-                        infos]
-                else:
-                    names = set([name for name, team in infos])
+                names = ['<font color="' + ('#007700' if team else '#000077') + '">'+ name + '</font>' for name, team in
+                    infos]
+                namecheck = [[name, team, 0] for name, team in infos]
                 if len(names) > 0:
-                    message += (' Some of them were placed by ' +
-                        ('\x0f, ' if color else ', ').join(names))
-                    message += '\x0f.' if color else '.'
+                    for f in range(len(namecheck)):
+                        for i in range(len(blocks_removed)):
+                            if blocks_removed[i][1] is not None:
+                                if namecheck[f][0] == blocks_removed[i][1][0] and namecheck[f][1] == blocks_removed[i][1][1] and blocks_removed[i][0] >= time:
+                                    namecheck[f][2] += 1
+                     
+                    message += (' Some of them were placed by ')
+                    for i in range(len(names)):
+                        message += ', ' + names[i] + "(" + str(namecheck[i][2]) + ")"
+                    userblocks = 0
+                    for i in range(len(namecheck)):
+                        userblocks = userblocks + namecheck[i][2]
+                    if userblocks == len(blocks):
+                        pass
+                    else:
+                        message += '. ' + str(len(blocks) - userblocks) + " were map blocks"
+                    message += '.'
                 else:
                     message += ' All of them were map blocks.'
                 last = blocks_removed[-1]
@@ -68,8 +78,7 @@ def apply_script(protocol, connection, config):
                     message += ', and was part of the map'
                 elif whom is not None:
                     name, team = whom
-                    if color:
-                        name = ('\x0303' if team else '\x0302') + name + '\x0f'
+                    name = '<font color="' + ('#007700' if team else '#000077') + '">' + name + '</font>'
                     message += ', and belonged to %s' % name
                 message += '.'
             switch_sentence = False
@@ -85,5 +94,16 @@ def apply_script(protocol, connection, config):
                 message += s + ' %s teammates in the last %s' % (teamkills, minutes_s)
             if switch_sentence or teamkills > 0:
                 message += '.'
+            votekick = getattr(protocol, 'votekick', None)
+            if (votekick and votekick.victim is player and
+                votekick.victim.world_object and votekick.instigator.world_object):
+                instigator = votekick.instigator
+                tiles = int(distance_3d_vector(player.world_object.position,
+                    instigator.world_object.position))
+                instigator_name = ('<font color="' + ('#007700' if instigator.team.id else '#000077') +
+                    '">' + instigator.name + '</font>')
+                message += (' %s is %d tiles away from %s, who started the votekick.' %
+                    (player_name, tiles, instigator_name))
             return message
+
     return HtmlHelperProtocol, connection

@@ -1,1 +1,133 @@
-<html><meta http-equiv="content-type" content="text/html; charset=utf-8"><head></head><body style="font-family: fixedsys, consolas, monospace;"><p>Hello! Welcome to the status server for {{server.name}}.Current uptime: {{(reactor.seconds() - server.start_time)|int}} seconds.</p><p>The server is currently running {{server.map_info.name}} by {{server.map_info.author}}.</p><p>Current players: {{server.connections|count}}/{{server.max_players}}.</p><style type="text/css">table.playerlist {	border-width: 1px;	border-spacing: 2px;	border-style: outset;	border-collapse: separate;}table.playerlist th {	border-width: 1px;	padding: 1px;	border-style: inset;}table.playerlist td {	border-width: 1px;	padding: 1px;	border-style: inset;}</style><table class="playerlist"><tbody><tr><td>Name</td><td>Ping</td><td>Team</td><td>Score</td></tr>{% for player in server.players.values() %}    <tr>    <td>{{player.name}}</td>    <td>{{player.latency}}</td>    <td>{{player.team.name}}</td>    <td>{{player.kills}}</td>    </tr>{% endfor %}</tbody></table><p>Enabled scripts: {{ ', '.join(server.config['scripts'])}}.</p><p>Current map overview:</p><img src="overview" /></body></html>
+<html>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<head>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://l2.io/ip.js?var=myip"></script>
+<script>
+function showPlayers() {
+$('.pd').show();
+}
+</script>
+</head>
+<body style="font-family: fixedsys, consolas, monospace;">
+<p>Hello! Welcome to the status server for {{server.name}}.
+Current uptime: {{(reactor.seconds() - server.start_time)|int}} seconds.</p>
+<p>The server is currently running {{server.map_info.name}} by {{server.map_info.author}}.</p>
+<p>Current players: {{server.connections|count}}/{{server.max_players}}.</p>
+<style type="text/css">
+table.playerlist {
+	border-width: 1px;
+	border-spacing: 2px;
+	border-style: outset;
+	border-collapse: separate;
+}
+table.playerlist th {
+	border-width: 1px;
+	padding: 1px;
+	border-style: inset;
+}
+table.playerlist td {
+      min-width: 32px;
+	border-width: 1px;
+	padding: 1px;
+	border-style: inset;
+}
+p.pdn {
+padding:0px;
+display:inline;
+opacity:0.5;
+}
+img {border:0px;}
+img.blue {
+background-color: rgb{{server.blue_team.color}};
+}
+div.pd {
+font-size: 8pt;
+color: white;
+}
+img.green {
+background-color: rgb{{server.green_team.color}};
+}
+td.w0 {
+background: url(http://i.imgur.com/qh5MO.gif) no-repeat center;
+}
+td.w1 {
+background: url(http://i.imgur.com/HLnoQ.gif) no-repeat center;
+}
+td.w2 {
+background: url(http://i.imgur.com/XmqxR.gif) no-repeat center;
+}
+td.gc {
+display:block;
+}
+</style>
+<table class="playerlist">
+<tbody>
+<tr>
+<td>ID</td>
+<td>Name</td>
+<td>Ping</td>
+<td><img class="blue" src=http://i.imgur.com/sYNVW.png title=Team><img class="green" src=http://i.imgur.com/0NnhT.png title=Team></td>
+<td><img src=http://i.imgur.com/Ajzhv.gif title=Score></td>
+<td><img src=http://i.imgur.com/TTMgQ.gif title=Kills></td>
+<td><img src=http://i.imgur.com/PvY6W.gif title=Deaths></td>
+<td><img src=http://i.imgur.com/rCZWA.gif title=Ratio></td>
+<td><img src=http://i.imgur.com/svL4X.gif title=Streak></td>
+<td><img src=http://i.imgur.com/iTLxj.gif title=Best Streak></td>
+<td>Weapon</td>
+<td><img src=http://i.imgur.com/sNbXo.gif title="Rifle Accuracy"></td>
+<td><img src=http://i.imgur.com/vGFBP.gif title="SMG Accuracy"></td>
+<td><img src=http://i.imgur.com/WHseu.gif title="Shotgun Accuracy"></td>
+<td>AFK for</td>
+<td class="gc">5 minute GC<p style="float:right;"><a href=# onClick="$('.gc').hide();">x</a></p></td>
+</tr>
+{% for player in server.players.values() %}
+    <tr class="{{player.player_id}}" >
+    <td>#{{player.player_id}}</td>
+    <td>{{player.name}}</td>
+    <td>{{player.latency}}</td>
+    <td><img src=http://i.imgur.com/o8IkV.gif style="background-color: rgb{{player.team.color}};" title={{player.team.name}}> {{player.team.name}}</td>
+    <td>{{player.kills}}
+{% if player.team.id > 0 %}
+{% if player.team.other.flag.player == player %}
+<img src=http://i.imgur.com/sIbyu.gif style="background-color: rgb{{player.team.other.color}};" title="Has enemy intel">
+{% endif %}
+{% endif %}
+</td>
+    <td>{{player.ratio_kills}}</td>
+    <td>{{player.ratio_deaths}}</td>
+    <td>{{server.html_get_ratio(player)|round(3)}}</td>
+    <td>{{player.streak}}</td>
+    <td>{{player.best_streak}}</td>
+    <td class="w{{player.weapon}}"><p></td>
+    <td>{{server.html_get_aimbot2_rfl(player)}}</td>
+    <td>{{server.html_get_aimbot2_smg(player)}}</td>
+    <td>{{server.html_get_aimbot2_sht(player)}}</td>
+    <td>{{server.html_get_afk(player)}}</td>
+    <td class="gc">{{server.html_grief_check(player, 5)}}</td>
+    </tr>
+{% endfor %}
+</tbody>
+</table>
+<p>Enabled scripts: {{ ', '.join(server.config['scripts'])}}.</p>
+<div id="overdiv" style="position:relative; background: url(overview) no-repeat center;width:512;height:512;">
+<div class="playerdiv">
+{% for player in server.players.values() %}
+{% if player.team.id == 0 %}
+<div class="pd" title="{{player.name}}" style="background: url(http://i.imgur.com/MJ3A8.gif) no-repeat center;display: none;width:4;height:5;position:absolute;left:{{player.world_object.position.x-2|round|int}};top:{{player.world_object.position.y-5|round|int}};"><p class="pdn">{{player.name}}</p></div>
+{% endif %}
+{% if player.team.id == 1 %}
+<div class="pd" title="{{player.name}}" style="background: url(http://i.imgur.com/kbBFY.gif) no-repeat center;display: none;width:4;height:5;position:absolute;left:{{player.world_object.position.x-3|round|int}};top:{{player.world_object.position.y-5|round|int}};"><p class="pdn">{{player.name}}</p></div>
+{% endif %}
+{% endfor %}
+</div>
+</div>
+<a class="hp" style="display:none;" href=# onClick="$('.pd').hide();$('.sp').show();$('.hp').hide();">Hide Players</a>
+<a class="sp" href=# onClick="showPlayers();$('.hp').show();$('.sp').hide();">Show Players</a><br>
+<a class="hpn" style="display:none;" href=# onClick="$('.pdn').hide();$('.spn').show();$('.hpn').hide();">Hide Player Names</a>
+<a class="spn" href=# onClick="$('.pdn').show();$('.hpn').show();$('.spn').hide();">Show Player Names</a>
+<script>
+window.onload=showPlayers();$('.hp').show();$('.sp').hide();
+</script>
+</body>
+</html>
