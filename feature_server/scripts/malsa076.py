@@ -1,16 +1,27 @@
 """
 MALSA 0.76: Make AoS Less Shit Again
 Instantly turns a 0.75 server into a 0.76 server.
+Version 2
 
 Author: GreaseMonkey
+
+Changelog:
+Version 2: 2018-08-27
+- Added damage falloff.
+
+Version 1: 2018-08-26
+- Initial release.
 """
 
 # vim: set sts=4 sw=4 et :
 
+import math
 import zlib
 
 import pyspades.constants
 from pyspades.constants import TORSO, HEAD, ARMS, LEGS
+
+import pyspades.collision
 import pyspades.contained
 import pyspades.master
 import pyspades.server
@@ -82,6 +93,15 @@ def apply_system_patches():
     pyspades.weapon.Shotgun.damage[HEAD] = 60
     pyspades.weapon.Shotgun.damage[ARMS] = 20
     pyspades.weapon.Shotgun.damage[LEGS] = 20
+
+    # Damage falloff
+    def get_damage(self, value, position1, position2):
+        falloff = 1 - ((pyspades.collision.distance_3d_vector(position1, position2)**1.5)*0.0004)
+        return math.ceil(self.damage[value] * falloff)
+    pyspades.weapon.BaseWeapon.get_damage = get_damage
+    pyspades.weapon.Rifle.get_damage = get_damage
+    pyspades.weapon.SMG.get_damage = get_damage
+    pyspades.weapon.Shotgun.get_damage = get_damage
 
     #
     # Master server
