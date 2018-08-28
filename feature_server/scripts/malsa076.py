@@ -1,11 +1,14 @@
 """
 MALSA 0.76: Make AoS Less Shit Again
 Instantly turns a 0.75 server into a 0.76 server.
-Version 2
+Version 3
 
 Author: GreaseMonkey
 
 Changelog:
+Version 3: 2018-08-28
+- Added piqueserver support.
+
 Version 2: 2018-08-27
 - Added damage falloff.
 
@@ -120,8 +123,14 @@ def apply_script(protocol, connection, config):
         def send_map(self, data = None, *args, **kwargs):
             if data is not None:
                 self.map_data = data
-                pyspades.server.map_start.size = data.get_size()
-                malsa_map_start.size = pyspades.server.map_start.size
+                try:
+                    pyspades.server.map_start.size = data.get_size()
+                except AttributeError:
+                    import pyspades.player as player
+                    player.map_start.size = data.get_size()
+                    malsa_map_start.size = player.map_start.size
+                else:
+                    malsa_map_start.size = pyspades.server.map_start.size
                 # TODO: get CRC
                 #malsa_map_start.crc = zlib.crc32(self.protocol.map_info.data) & 0xFFFFFFFF
                 #malsa_map_start.map_name = self.protocol.map_info.rot_info.get_map_name()
